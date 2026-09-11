@@ -1,0 +1,14 @@
+{
+  "name": "smash-character-finder",
+  "version": "1.0.0",
+  "description": "A website that allows the user to select attributes they'd like for their Super Smash Bros main, and then selects a character based on statistics stored in a postgreSQL database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
+  }
+}

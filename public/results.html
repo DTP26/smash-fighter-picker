@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Fighter Matches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Kanit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1 class="results-label">Your best suited fighters!</h1>
+  <p class="results-sub">
+    Attributes are colored based on what you requested:
+    <br><span class="legend legend--match">Green</span> means the character matches the requirement. 
+    <br><span class="legend legend--mismatch">Red</span> is for greatly missed numerical requirements <br>or unmatched "Yes or No" requirements. 
+    <br><span class="legend legend--smallMismatch">Yellow</span> is for stats that don't match, but aren't too far off. <br>
+    All stats left on 'Ignore' stay white.
+  </p>
+
+  <div class="results-container" id="resultsContainer"></div>
+
+  <div class="empty-message"> No characters match your criteria! <br>Try again with <u>less mandatory preferences!</u></div>
+
+  <div class="submit-section">
+    <a href="index.html" class="return-btn">Try Again?</a>
+  </div>
+
+  <script>
+    // every stat the form can request, how to label it, and how to turn
+    // its raw value into the same wording used on the form page
+    const STAT_DEFS = [
+      { key: "run_speed", label: "Run Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "initial_dash", label: "Initial Dash", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "air_speed", label: "Air Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "air_acceleration", label: "Air Acceleration", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "fall_speed", label: "Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
+      { key: "weight", label: "Weight", values: { 1: "Heavy", 0: "Average", "-1": "Light" } },
+      { key: "fast_escape", label: "Fast Escape Option", values: { "true": "Yes", "false": "No" } },
+      { key: "multiple_jumps", label: "Multiple Double Jumps", values: { "true": "Yes", "false": "No" } },
+      { key: "anti_projectile", label: "Anti Projectile Move", values: { "true": "Yes", "false": "No" } },
+      { key: "has_item", label: "Has Item", values: { "true": "Yes", "false": "No" } },
+      { key: "has_zair", label: "Has Zair", values: { "true": "Yes", "false": "No" } },
+      { key: "sig_change", label: "Form/Moveset Change", values: { "true": "Yes", "false": "No" } },
+      {
+        key: "effective_range",
+        label: "Effective Range",
+        values: { 5: "Long Range", 4: "Long-Mid Range", 3: "Mid Range", 2: "Close-Mid Range", 1: "Close Range", 6: "Adaptive" }
+      },
+    ];
+
+    function formatValue(def, rawValue) {
+      if (rawValue === undefined || rawValue === null) return "—";
+      return def.values[rawValue] ?? String(rawValue);
+    }
+
+    // mirrors the loose == comparison bestFighters() uses in app.js,
+    // including the "6 = variable, always counts" edge case
+    function matchState(def, fighter, mandatory, preferred) {
+      let requestedValue;
+      if (def.key in mandatory) {
+        requestedValue = mandatory[def.key][0];
+      } else if (def.key in preferred) {
+        requestedValue = preferred[def.key][0];
+      } else {
+        return "neutral";
+      }
+      const fighterValue = fighter[def.key];
+      if (fighterValue == requestedValue || fighterValue == 6) {
+        return "match";
+      } else if (Math.abs(fighterValue - requestedValue) > 1 || def.values.length > 2) {
+        return "bigMismatch"
+      } else {
+        return "smallMismatch"
+      }
+      const matches = fighterValue == requestedValue || fighterValue == 6;
+      return matches ? "match" : "mismatch";
+    }
+
+    // splits `total` items into rows of at most `maxPerRow`, keeping row
+    // sizes as even as possible and handing any remainder to the middle
+    // row(s) first so the block reads as a centered pyramid rather than
+    // a lopsided or orphaned last row (e.g. 13 items, max 5 -> 4, 5, 4)
+    function balancedRowSizes(total, maxPerRow) {
+      const rows = Math.max(1, Math.ceil(total / maxPerRow));
+      const base = Math.floor(total / rows);
+      let remainder = total - base * rows;
+      const sizes = new Array(rows).fill(base);
+      const mid = Math.floor(rows / 2);
+      let step = 0;
+      while (remainder > 0) {
+        const idx = step % 2 === 0
+          ? mid + Math.floor((step + 1) / 2)
+          : mid - Math.floor((step + 1) / 2);
+        sizes[idx] += 1;
+        remainder -= 1;
+        step += 1;
+      }
+      return sizes;
+    }
+
+
+    function buildStatList(fighter, mandatory, preferred) {
+      const list = document.createElement('div');
+      list.className = 'stat-list';
+ 
+      const rowSizes = balancedRowSizes(STAT_DEFS.length, 5);
+      let cursor = 0;
+ 
+      rowSizes.forEach(size => {
+        const rowGroup = document.createElement('div');
+        rowGroup.className = 'stat-row-group';
+ 
+        STAT_DEFS.slice(cursor, cursor + size).forEach(def => {
+          const state = matchState(def, fighter, mandatory, preferred);
+ 
+          const chip = document.createElement('div');
+          chip.className = `stat-chip stat-chip--${state}`;
+ 
+          const label = document.createElement('span');
+          label.className = 'stat-chip-label';
+          label.textContent = def.label;
+ 
+          const value = document.createElement('span');
+          value.className = 'stat-chip-value';
+          value.textContent = formatValue(def, fighter[def.key]);
+ 
+          chip.appendChild(label);
+          chip.appendChild(value);
+          rowGroup.appendChild(chip);
+        });
+ 
+        list.appendChild(rowGroup);
+        cursor += size;
+      });
+ 
+      return list;
+
+    }
+
+    async function getStats() {
+      const response = await fetch("/api/stats");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch characters: ${response.status}`);
+      }
+      return await response.json();
+    }
+
+    (async () => {
+      const results = JSON.parse(localStorage.getItem('results')) || [];
+      const { mandatory = {}, preferred = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
+      console.log(results);
+
+      const container = document.getElementById('resultsContainer');
+      const fighters = await getStats();
+
+      // creates results card for each character selected
+      results.forEach(name => {
+        const fighter = fighters.find(f => f.name === name);
+
+        const card = document.createElement('div');
+        card.className = 'fighter-card';
+
+        const portrait = document.createElement('div');
+        portrait.className = 'fighter-portrait';
+
+        const img = document.createElement('img');
+        img.src = `/fighterRenders/${name.toLowerCase()}.png`;
+        img.alt = name;
+
+        const label = document.createElement('div');
+        label.className = 'fighter-name';
+        label.textContent = name;
+
+        portrait.appendChild(img);
+        portrait.appendChild(label);
+        card.appendChild(portrait);
+
+        if (fighter) {
+          const details = document.createElement('div');
+          details.className = 'fighter-details';
+          details.appendChild(buildStatList(fighter, mandatory, preferred));
+          card.appendChild(details);
+        }
+
+        container.appendChild(card);
+      });
+    })();
+  </script>
+</body>
+</html>

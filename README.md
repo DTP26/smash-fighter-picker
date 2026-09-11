@@ -1,0 +1,2 @@
+The bulk of the algorithm's logic in selecting smash characters is handled in FighterMap.java. It scrapes fighter data from ultimateframedata.com (as well as inputs some manual stats/attributes missing from the website) and puts each character into different categories. 
+app.js handles receieving the user's requested attributes from index.html and sending them to FIghterController.java. This runs the best match algorithm and sends its results to results.html.
