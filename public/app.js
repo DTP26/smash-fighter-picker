@@ -67,12 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
       select.addEventListener('change', () => {
         const value = parseInt(select.value);
         video.src = `/statVods/${select.name}_${value}.mp4`;
-        console.log(video.src);
         video.load();
       });
       // accounts for retaining video on site refresh
       const value = parseInt(select.value);
       video.src = `/statVods/${select.name}_${value}.mp4`;
+      console.log(video.src);
       video.load();
     } 
     // case with single checkbox
