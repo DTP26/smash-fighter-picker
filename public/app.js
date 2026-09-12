@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } 
     // case with single checkbox
     else if (checkbox) {
-      video.src = `/statVods/${checkbox.name.replace(/\s+/g, '')}.mp4`;
+      video.src = `/statVods/${checkbox.name}.mp4`;
       console.log(video.src);
       video.load();
     }
