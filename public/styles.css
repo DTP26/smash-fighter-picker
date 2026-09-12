@@ -56,7 +56,7 @@ body {
 }
 
 .hero-sub {
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
   line-height: 1.6;
   color: var(--text-muted);
   margin: 0 auto;
@@ -64,7 +64,7 @@ body {
 }
 
 .hero-meter {
-  width: 600px;
+  width: min(600px, 80%);
   height: 4px;
   margin: 28px auto 0;
   border-radius: 2px;
@@ -93,7 +93,7 @@ form {
 .section-label {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 5.0rem;
+  font-size: clamp(2rem, 8vw, 5rem);
   color: var(--text);
   text-align: center;
   margin: 0 0 18px 4px;
@@ -102,7 +102,7 @@ form {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
   gap: 20px;
 }
 
@@ -391,10 +391,11 @@ select:focus-visible {
 .results-sub {
   text-align: center;
   color: var(--text-muted);
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
   max-width: 59ch;
   margin: 0 auto 40px;
   line-height: 1.6;
+  padding: 0 20px;
 }
  
 .legend {
@@ -438,7 +439,7 @@ select:focus-visible {
   align-items: flex-start;
   justify-content: center;
   padding: 20px 40px;
-  width: 75vw;
+  width: 100%;
   gap: 32px;
   margin: 40px auto 60px;
   max-width: 1400px;
@@ -471,6 +472,7 @@ select:focus-visible {
   width: 520px;
   max-width: 100%;
   min-width: 0;
+  box-sizing: border-box;
   scroll-snap-align: center;
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
@@ -485,11 +487,12 @@ select:focus-visible {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 100%;
 }
  
 .fighter-card img {
-  max-width: 300px;
-  max-height: 300px;
+  width: min(300px, 100%);
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: var(--radius-md);
   transition: transform 0.3s ease;
@@ -501,10 +504,11 @@ select:focus-visible {
  
 .fighter-name {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
   font-weight: 600;
   color: var(--text);
   text-align: center;
+  word-break: break-word;
 }
  
 .fighter-details {
@@ -512,22 +516,26 @@ select:focus-visible {
 }
  
 .stat-list {
-  display: grid;
+  display: flex;
   flex-direction: column;
   gap: 8px;
   text-align: center;
   align-items: center;
+  width: 100%;
 }
  
 .stat-row-group {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
+  width: 100%;
 }
  
 .stat-chip {
-  width: 88px;
-  flex: 0 0 88px;
+  flex: 0 1 88px;
+  min-width: 64px;
+  max-width: 88px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -581,6 +589,18 @@ select:focus-visible {
 @media (max-width: 480px) {
   .fighter-card {
     width: 100%;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .results-container {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .stat-chip {
+    flex-basis: 72px;
+    min-width: 56px;
   }
 }
 
