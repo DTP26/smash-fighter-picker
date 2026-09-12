@@ -5,11 +5,15 @@ require("dotenv").config();
 const app = express();
 
 const pool = new Pool({
-    user: process.env.DB_USER,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+    /*user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT*/
 });
 
 app.use(express.json());
