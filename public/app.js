@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       select.addEventListener('change', () => {
         const value = parseInt(select.value);
         video.src = `/statVods/${select.name.replace(/\s+/g, '')}_${value}.mp4`;
-        console.log(video.src)
+        console.log(video.src);
         video.load();
       });
       // accounts for retaining video on site refresh
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // case with single checkbox
     else if (checkbox) {
       video.src = `/statVods/${checkbox.name.replace(/\s+/g, '')}.mp4`;
-      console.log(video.src)
+      console.log(video.src);
       video.load();
     }
   });
