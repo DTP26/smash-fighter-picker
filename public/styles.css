@@ -469,7 +469,7 @@ select:focus-visible {
   border-radius: var(--radius-lg);
   padding: 24px;
   gap: 16px;
-  width: 520px;
+  width: 550px;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -493,7 +493,7 @@ select:focus-visible {
 .fighter-card img {
   width: min(300px, 100%);
   aspect-ratio: 1 / 1;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: var(--radius-md);
   transition: transform 0.3s ease;
 }
