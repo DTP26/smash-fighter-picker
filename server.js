@@ -9,26 +9,29 @@ const pool = new Pool({
     ssl: {
         rejectUnauthorized: false
     }
-    /*user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT*/
+});
+
+pool.query("SELECT NOW()", (err, result) => {
+    if (err) {
+        console.error("❌ Database connection failed:", err);
+    } else {
+        console.log("✅ Connected to Neon:", result.rows[0]);
+    }
 });
 
 app.use(express.json());
 app.use(express.static("public"));
 
-app.get("/api/stats", async (req, res) => {
+app.get("/api/attributes", async (req, res) => {
     try {
         const result = await pool.query(
-            "SELECT * FROM stats ORDER BY stats.name"
+            "SELECT * FROM attributes ORDER BY id"
         );
 
         res.json(result.rows);
 
     } catch (error) {
-        console.error(error);
+        console.error("Query failed:", error);
 
         res.status(500).json({
             error: "Database query failed"

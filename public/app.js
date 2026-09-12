@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ JS loaded and DOM ready");
   async function getStats() {
-      const response = await fetch("/api/stats");
+      const response = await fetch("/api/attributes");
 
       if (!response.ok) {
           throw new Error(`Failed to fetch characters: ${response.status}`);
@@ -140,15 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
       }
     });
-
-    // block submission if nothing was marked Mandatory or Preferred
-    const hasRequirement = Object.keys(mandatory).length > 0 || Object.keys(preferred).length > 0;
-    if (!hasRequirement) {
-      if (formError) 
-        formError.hidden = false;
-        return;
-    }
-
 
     // sends the requirements data to fightercontroller, which will 
     // eventually send its results to results.html

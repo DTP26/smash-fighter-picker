@@ -140,7 +140,7 @@
     }
 
     async function getStats() {
-      const response = await fetch("/api/stats");
+      const response = await fetch("/api/attributes");
       if (!response.ok) {
         throw new Error(`Failed to fetch characters: ${response.status}`);
       }
