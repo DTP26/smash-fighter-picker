@@ -66,17 +66,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (select) {
       select.addEventListener('change', () => {
         const value = parseInt(select.value);
-        video.src = `/statVods/${select.name.replace(/\s+/g, '').toLowerCase()}_${value}.mp4`;
+        video.src = `/statVods/${select.name.replace(/\s+/g, '')}_${value}.mp4`;
         video.load();
       });
       // accounts for retaining video on site refresh
       const value = parseInt(select.value);
-      video.src = `/statVods/${select.name.replace(/\s+/g, '').toLowerCase()}_${value}.mp4`;
+      video.src = `/statVods/${select.name.replace(/\s+/g, '')}_${value}.mp4`;
       video.load();
     } 
     // case with single checkbox
     else if (checkbox) {
-      video.src = `/statVods/${checkbox.name.replace(/\s+/g, '').toLowerCase()}.mp4`;
+      video.src = `/statVods/${checkbox.name.replace(/\s+/g, '')}.mp4`;
       video.load();
     }
   });
