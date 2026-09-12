@@ -34,10 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
               score += Math.abs(Number(fighter[stat]) - value) * -1
             }
           }
-          //console.log(`Score: ${score} ${fighter.name}`);
           // reset results if new best match is found
           if (score > currBest && (fighter.name != "Mii Swordfighter" || mii_sword)) {
-              //console.log(`New best: ${score} ${fighter.name}`);
               currBest = score;
               results.clear();
           }
@@ -65,20 +63,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // case with select box
     if (select) {
       select.addEventListener('change', () => {
-        const value = parseInt(select.value);
-        video.src = `/statVods/${select.name}_${value}.mp4`;
+        video.src = `/statVods/${select.name}_${select.value}.mp4`;
         video.load();
       });
       // accounts for retaining video on site refresh
-      const value = parseInt(select.value);
-      video.src = `/statVods/${select.name}_${value}.mp4`;
-      console.log(video.src);
+      video.src = `/statVods/${select.name}_${select.value}.mp4`;
       video.load();
     } 
     // case with single checkbox
     else if (checkbox) {
       video.src = `/statVods/${checkbox.name}.mp4`;
-      console.log(video.src);
       video.load();
     }
   });
@@ -148,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const fighters = await getStats();
 
-    console.log(mandatory);
     const results = bestFighters(
         mandatory,
         preferred,
