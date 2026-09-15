@@ -5,7 +5,8 @@ How it works:
 server.js: hosts the site via a Render connection URl and stores the function/query for grabbing fighter data from a Neon database
 
 index.html: shows fighter attributes with short descriptions and complementary videos with more detail. Each attribute can be marked as 'Mandatory', 'Preferred', and 'Ignore' to signify their weight in the search algorithm
-
+<img width="841" height="631" alt="index_preview" src="https://github.com/user-attachments/assets/64b5f219-5d2f-484b-bdbb-0a2ae1a60406" />
 app.js: Handles dynamic video loading for the multi select attributes, collects the users responses, and calculates the best fighter options, and then sends the results to results.html
 
 results.html: Displays the fighter(s) that best match the users requests with all their attributes listed (requested attributes being highlighted)
+<img width="740" height="580" alt="results_preview" src="https://github.com/user-attachments/assets/5a6f6283-d285-457d-8819-da449fdbb58c" />
