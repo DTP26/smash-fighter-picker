@@ -191,34 +191,32 @@
         </div>
 
         <div class="form-group">
-          <label class="stat-label" for="fallSpeed">Fall Speed</label>
-          <p class="stat-desc">How fast the character will/can fall to the ground.
-            <br>(Combines fall speed and fast fall speed for simplicity. 
-            <br> Fast/Floaty: at least one is fast/slow, other is average
-            <br> Average: They are both average/they are opposites.)
+          <label class="stat-label" for="fastfall">Fast Fall Speed</label>
+          <p class="stat-desc">How fast the character will fall when holding down in the air.
+            <br>(Fast: greater than 2.7. Floaty: less than 2.4)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
-              <source src="/statVods/fall_speed_0.mp4" type="video/mp4">
+              <source src="/statVods/Fall_Speed_0.mp4" type="video/mp4">
             </video>
             <div class="select-wrap">
-              <select id="fallSpeed" name="fall_speed">
+              <select id="fastfall" name="fast_fall">
                 <option value="1">Fast-Faller</option>
                 <option value="0" selected>Average</option>
                 <option value="-1">Floaty</option>
               </select>
             </div>
-            <div class="radio-group" role="radiogroup" aria-label="Fall Speed requirement">
+            <div class="radio-group" role="radiogroup" aria-label="Fast fall requirement">
               <label class="segment">
-                <input type="radio" name="fallSpeedReq" id="fallSpeedMandatory" value="1">
+                <input type="radio" name="fastfallReq" id="fastfallMandatory" value="1">
                 <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
               </label>
               <label class="segment">
-                <input type="radio" name="fallSpeedReq" id="fallSpeedPreferred" value="0">
+                <input type="radio" name="fastfallReq" id="fastfallPreferred" value="0">
                 <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
               </label>
               <label class="segment">
-                <input type="radio" name="fallSpeedReq" id="fallSpeedIgnore" value="-1" checked>
+                <input type="radio" name="fastfallReq" id="fastfallIgnore" value="-1" checked>
                 <span title="This attribute will be irrelevant regarding which characters are recommended.">Ignore</span>
               </label>
             </div>
