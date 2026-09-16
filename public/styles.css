@@ -123,16 +123,23 @@ form {
 .stat-label {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.50rem;
+  font-size: 1.75rem;
   color: var(--text);
   margin: 0 0 6px;
 }
 
 .stat-desc {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.5;
   color: var(--text-muted);
-  margin: 0 0 18px;
+  margin: 0 0 0.8rem;
+}
+
+.playstyle-disclaimer {
+  font-size: 1.0 rem;
+  line-height: 1.5;
+  color: var(--danger);
+  margin: 0 0 12px;
 }
 
 .card-body {
