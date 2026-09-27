@@ -140,21 +140,17 @@
 
     }
 
-    async function getStats() {
-      const response = await fetch("/api/attributes");
-      if (!response.ok) {
-        throw new Error(`Failed to fetch characters: ${response.status}`);
-      }
-      return await response.json();
-    }
-
     (async () => {
       const results = JSON.parse(localStorage.getItem('results')) || [];
       const { mandatory = {}, preferred = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
       console.log(results);
 
       const container = document.getElementById('resultsContainer');
-      const fighters = await getStats();
+
+      const response = await fetch("/api/data");
+      const data = await response.json();
+      //const attributes = data.attributes;
+      const fighters = data.attributes;
 
       // creates results card for each character selected
       results.forEach(name => {

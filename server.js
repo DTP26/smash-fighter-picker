@@ -11,6 +11,7 @@ const pool = new Pool({
     }
 });
 
+
 pool.query("SELECT NOW()", (err, result) => {
     if (err) {
         console.error("❌ Database connection failed:", err);
@@ -19,27 +20,67 @@ pool.query("SELECT NOW()", (err, result) => {
     }
 });
 
-app.use(express.json());
-app.use(express.static("public"));
+let attributes = [];
 
-app.get("/api/attributes", async (req, res) => {
+async function loadAttributes() {
     try {
         const result = await pool.query(
             "SELECT * FROM attributes ORDER BY id"
         );
 
-        res.json(result.rows);
+        attributes = result.rows;
 
     } catch (error) {
-        console.error("Query failed:", error);
-
-        res.status(500).json({
-            error: "Database query failed"
-        });
+        console.error("Failed to load attributes:", error);
+        throw error;
     }
+}
+
+let matchups = {};
+
+async function loadMatchups() {
+    try {
+        const result = await pool.query(
+            "SELECT * FROM matchups"
+        );
+
+        result.rows.forEach(row => {
+            matchups[row.player_id] ??= {};
+            matchups[row.player_id][row.opponent_id] = row.ratio;
+        });
+
+    } catch (error) {
+        console.error("Failed to load matchups:", error);
+        throw error;
+    }
+}
+
+app.get("/api/data", (req, res) => {
+    res.json({
+        attributes,
+        matchups
+    });
 });
+
+
+app.use(express.json());
+app.use(express.static("public"));
+
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
-});
+async function startServer() {
+    try {
+        await loadAttributes();
+        await loadMatchups();
+        
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+
+    } catch (error) {
+        console.error("❌ Server failed to start.");
+        process.exit(1);
+    }
+}
+
+startServer();

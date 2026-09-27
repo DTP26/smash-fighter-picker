@@ -1,14 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ JS loaded and DOM ready");
-  async function getStats() {
-      const response = await fetch("/api/attributes");
-
-      if (!response.ok) {
-          throw new Error(`Failed to fetch characters: ${response.status}`);
-      }
-
-      return await response.json();
-  }
 
   function bestFighters(mandatory, preferred, fighters, mii_sword) {
 
@@ -47,6 +38,41 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     
       return results;
+  }
+
+  // TODO: I want to keep track of whether or not the player and opponent agree on the ranking per matchup 
+  // TODO: I also want some way to have some matchups be given higher priority such that some matchups are mandatory, and the others are preferred
+
+  function matchupMatch(mandatory, preferred, fighters, matchups, mutual, mii_sword) {
+    results = new Set([1, 2]);
+    // initially start with set of all fighters. It will remove any that don't meet the requirements 
+    /*for (const fighter of fighters) {
+      results.add(fighter.id);
+    }*/
+    // requirement represents whether we need to beat (1) or at least go even (0) vs characater
+    for (const [character, requirement] of Object.entries(mandatory)) {
+        // create of copy of results to iterate through so we can remove from results while iterating
+        resultsCopy = new Set(results);
+        for (const opponent of resultsCopy) { 
+          // check opinions of matchups from both the character and the opponent
+          // matchups[character1][character2] represents how players of character1 think they do vs the character2
+          playerOpinion = matchups[character][opponent] <= requirement;
+          opponentOpinion = matchups[opponent][character] >= requirement;
+          // if mutual is true, both opinions must agree
+          // if mutual is false, either opinion is sufficient
+          if (!(mutual && playerOpinion && opponentOpinion) || (!mutual && (playerOpinion || opponentOpinion))) {
+             results.delete(opponent);
+             console.log("Removing ", opponent, " from results because of matchup with ", character);
+          } 
+        }
+    }
+    // convert ids into names 
+    const resultsNames = new Set();
+    for (const fighter of results) { 
+      resultsNames.add(fighters[fighter - 1].name);
+    }
+    console.log("Matchup results: ", resultsNames);
+    return resultsNames;
   }
 
   const formGroups = document.querySelectorAll('.form-group');
@@ -137,17 +163,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // sends the requirements data to fightercontroller, which will 
-    // eventually send its results to results.html
     
-    const fighters = await getStats();
+    const response = await fetch("/api/data");
+    const data = await response.json();
 
-    const results = bestFighters(
-        mandatory,
-        preferred,
-        fighters,
-        mii_sword
-    );
+    const attributes = data.attributes;
+    const matchups = data.matchups;
+
+    //console.log(attributes);
+    //console.log(matchups);
+
+    const results = bestFighters(mandatory, preferred, attributes, mii_sword);
+    matchupMandatoryTest = {2: 0}
+    const matchupTest = matchupMatch(matchupMandatoryTest, preferred, attributes, matchups, true, mii_sword);
 
     localStorage.setItem(
         "results",
