@@ -1,4 +1,4 @@
-How to visit: Can be ran locally via 'npm start' or loaded from the website URL'https://smash-fighter-picker.onrender.com/'
+How to visit: Can be ran locally via 'npm start'
 
 How it works: 
 
