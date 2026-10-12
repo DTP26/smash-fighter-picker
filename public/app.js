@@ -6,10 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
       let currBest = -999;
       let results = new Set();
 
-      remaining.forEach((fighter) => {
+      // not using remaining from matchups for now until matchups table is done
+      fighters.forEach((fighter) => {
         // first determine if fighter matches mandatory requirements
         let valid = true;
-        const currFighter = fighters[fighter - 1];
+        const currFighter = fighters[fighter.id - 1];
        
         for (const [stat, value] of Object.entries(mandatory)) {
           // edge case for characters with highly variable effective range
