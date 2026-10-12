@@ -1,18 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ JS loaded and DOM ready");
 
-  function bestFighters(mandatory, preferred, fighters, mii_sword) {
+  function bestFighters(remaining, mandatory, preferred, fighters, mii_sword) {
 
       let currBest = -999;
       let results = new Set();
 
-      fighters.forEach((fighter) => {
+      remaining.forEach((fighter) => {
         // first determine if fighter matches mandatory requirements
         let valid = true;
+        const currFighter = fighters[fighter - 1];
        
         for (const [stat, value] of Object.entries(mandatory)) {
           // edge case for characters with highly variable effective range
-          valid = valid && (fighter[stat] == value || fighter[stat] == 6);
+          valid = valid && (currFighter[stat] == value || currFighter[stat] == 6);
         }
         
         // if mandatory needs are met, calculate preferred score
@@ -21,58 +22,54 @@ document.addEventListener("DOMContentLoaded", () => {
           // score based on how close to desired the character is
           for (const [stat, value] of Object.entries(preferred)) {
             // edge case for characters with highly variable effective range
-            if (fighter[stat] != 6) {
-              score += Math.abs(Number(fighter[stat]) - value) * -1
+            if (currFighter[stat] != 6) {
+              score += Math.abs(Number(currFighter[stat]) - value) * -1
             }
           }
           // reset results if new best match is found
-          if (score > currBest && (fighter.name != "Mii Swordfighter" || mii_sword)) {
+          if (score > currBest) {
               currBest = score;
               results.clear();
           }
           // add character if they match the score threshold
-          if (score == currBest && (fighter.name != "Mii Swordfighter" || mii_sword)) {
-            results.add(fighter.name);
+          if (score == currBest) {
+            results.add(currFighter.name);
           }
         } 
       })
+
+      if (!mii_sword) {
+        results.delete("Mii Swordfighter")
+      }
     
       return results;
   }
 
-  // TODO: I want to keep track of whether or not the player and opponent agree on the ranking per matchup 
-  // TODO: I also want some way to have some matchups be given higher priority such that some matchups are mandatory, and the others are preferred
-
-  function matchupMatch(mandatory, preferred, fighters, matchups, mutual, mii_sword) {
-    results = new Set([1, 2]);
+  function matchupMatch(requests, fighters, matchups, mutual) {
+    results = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     // initially start with set of all fighters. It will remove any that don't meet the requirements 
     /*for (const fighter of fighters) {
       results.add(fighter.id);
     }*/
     // requirement represents whether we need to beat (1) or at least go even (0) vs characater
-    for (const [character, requirement] of Object.entries(mandatory)) {
+    for (const [id, requirement] of Object.entries(requests)) {
         // create of copy of results to iterate through so we can remove from results while iterating
         resultsCopy = new Set(results);
         for (const opponent of resultsCopy) { 
           // check opinions of matchups from both the character and the opponent
           // matchups[character1][character2] represents how players of character1 think they do vs the character2
-          playerOpinion = matchups[character][opponent] <= requirement;
+          character = parseInt(id);
+          playerOpinion = matchups[character][opponent] <= requirement * -1;
           opponentOpinion = matchups[opponent][character] >= requirement;
           // if mutual is true, both opinions must agree
           // if mutual is false, either opinion is sufficient
-          if (!(mutual && playerOpinion && opponentOpinion) || (!mutual && (playerOpinion || opponentOpinion))) {
+          if ((mutual && !(playerOpinion && opponentOpinion)) || (!mutual && !(playerOpinion || opponentOpinion))) {
              results.delete(opponent);
-             console.log("Removing ", opponent, " from results because of matchup with ", character);
+             //console.log("Removing ", fighters[opponent - 1].name, " from results because of matchup with ", fighters[character - 1].name);
           } 
         }
     }
-    // convert ids into names 
-    const resultsNames = new Set();
-    for (const fighter of results) { 
-      resultsNames.add(fighters[fighter - 1].name);
-    }
-    console.log("Matchup results: ", resultsNames);
-    return resultsNames;
+    return results;
   }
 
   const formGroups = document.querySelectorAll('.form-group');
@@ -107,20 +104,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // NEW: rework to have mandatory and preferred seperate
 
   const form = document.getElementById('preferencesForm');
-
+  let matchupRequests = {};
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const errorMessage = document.getElementById('form-error');
 
+    matchupRequests = window.getMatchupSelections(); // move up; delete the later const
     const selectedImportance = form.querySelector(
-        'input[type="radio"][value="1"]:checked, input[type="radio"][value="0"]:checked'
+     '.form-group input[type="radio"][value="1"]:checked, .form-group input[type="radio"][value="0"]:checked'
     );
 
-    if (!selectedImportance) {
+    if (!selectedImportance && Object.keys(matchupRequests.chars).length === 0) {
         errorMessage.textContent =
-            "Please set at least one attribute to Mandatory or Preferred!";
+            "Please set at least one attribute/matchup!";
 
         errorMessage.classList.add('visible');
 
@@ -167,15 +165,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const response = await fetch("/api/data");
     const data = await response.json();
 
+    // retrieve table data 
     const attributes = data.attributes;
     const matchups = data.matchups;
 
     //console.log(attributes);
     //console.log(matchups);
+    console.log(matchupRequests.mutual);
 
-    const results = bestFighters(mandatory, preferred, attributes, mii_sword);
-    matchupMandatoryTest = {2: 0}
-    const matchupTest = matchupMatch(matchupMandatoryTest, preferred, attributes, matchups, true, mii_sword);
+   
+    //matchupRequests = window.getMatchupSelections();
+   
+    const matchupResults = matchupMatch(matchupRequests.chars, attributes, matchups, matchupRequests.mutual);
+    const results = bestFighters(matchupResults, mandatory, preferred, attributes, mii_sword);
 
     localStorage.setItem(
         "results",
@@ -186,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // attributes matched (green) or didn't (red) for each fighter
     localStorage.setItem(
         "requirements",
-        JSON.stringify({ mandatory, preferred })
+        JSON.stringify({ mandatory, preferred, matchupRequests })
     );
 
 

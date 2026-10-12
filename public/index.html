@@ -11,18 +11,62 @@
 </head>
 <body>
 
-  <header class="hero">
-    <h1 class="title-label">Find your ideal Smash Ultimate character!</h1>
-    <p class="hero-sub">Put attributes you'd like your character to have on 'Preferred'. <br>Your result will be as close to as many of your preferred stats as possible.<br> <br>
-      Attributes that you NEED to have can be set to 'Mandatory'. <br> Do note that too many requirements may lead finding no results! <br>
-      <br> Leave attributes that you don't care about on 'Ignore'. <br> They will not be factored into the search. </p>
-    <div class="hero-meter" aria-hidden="true"></div>
-  </header>
+
+  <h1 class="title-label">Find your ideal Smash Ultimate character!</h1>
+  <div class="hero-meter" aria-hidden="true"></div>
 
   <form id="preferencesForm">
 
+    <section class="stat-section" aria-labelledby="matchups-heading">
+      <h2 class="section-label" id="matchups-heading">Matchups</h2>
+      <p class="hero-sub matchup-intro">
+        Pick a mode, then click characters to mark how you want to do against them.
+        Click a character again in the same mode to clear it.
+      </p>
+ 
+      <!-- matchups.js fills this with one <button class="matchup-tile"> per character -->
+      <div class="matchup-grid" id="matchupGrid"></div>
+ 
+      <div class="matchup-controls">
+        <!-- which value a click paints: 1 = winning (green), 0 = at least even (yellow) -->
+        <div class="radio-group matchup-modes" role="radiogroup" aria-label="Matchup mode">
+          <label class="segment segment--win">
+            <input type="radio" name="matchup_mode" value="1" checked>
+            <span>Winning</span>
+          </label>
+          <label class="segment segment--even">
+            <input type="radio" name="matchup_mode" value="0">
+            <span>At least even</span>
+          </label>
+        </div>
+ 
+        <!-- one global setting for every matchup above, not per character -->
+        <label class="toggle">
+          <input type="checkbox" id="matchupAgree" value="1">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="toggle-text">Both sides must agree on the matchup</span>
+        </label>
+    
+        <button type="button" class="matchup-clear" id="matchupClear">Clear all</button>
+      </div>
+    </section>
+
+    <div class="hero-meter" aria-hidden="true"></div>
+
+    <h2 class="section-label" id="movement-heading">Attributes</h2>
+
+
+    <header class="hero">
+       <p class="hero-sub">Put attributes you'd like your character to have on 'Preferred'. <br>Your result will be as close to as many of your preferred stats as possible.<br> <br>
+      Attributes that you NEED to have can be set to 'Mandatory'. <br> Do note that too many requirements may lead finding no results! <br>
+      <br> Leave attributes that you don't care about on 'Ignore'. <br> They will not be factored into the search. 
+    </p>
+    </header>
+   
+     <div class="hero-meter" aria-hidden="true"></div>
+
     <section class="stat-section" aria-labelledby="movement-heading">
-      <h2 class="section-label" id="movement-heading">Base Stats</h2>
+      <h2 class="attributes-label" id="movement-heading">Base Stats</h2>
       <div class="card-grid">
 
         <div class="form-group">
@@ -57,7 +101,7 @@
             </div>
           </div>
         </div>
-
+        
         <div class="form-group">
           <label class="stat-label" for="initialDash">Initial Dash</label>
           <p class="stat-desc">How far the character dashes in short bursts.
@@ -259,8 +303,10 @@
       </div>
     </section>
 
+    <div class="hero-meter" aria-hidden="true"></div>
+
     <section class="stat-section" aria-labelledby="toolkit-heading">
-      <h2 class="section-label" id="toolkit-heading">Toolkit</h2>
+      <h2 class="attributes-label" id="toolkit-heading">Toolkit</h2>
       <div class="card-grid">
 
         <div class="form-group">
@@ -440,8 +486,10 @@
       </div>
     </section>
 
+    <div class="hero-meter" aria-hidden="true"></div>
+
     <section class="stat-section" aria-labelledby="playstyle-heading">
-      <h2 class="section-label" id="playstyle-heading">Playstyle</h2>
+      <h2 class="attributes-label" id="playstyle-heading">Playstyle</h2>
       <p class="playstyle-disclaimer">Attributes in this section are much less objective than the other categories and are actively being revised. I recommend using Preferred instead of Mandatory.</p>
       <div class="card-grid">
 
@@ -480,6 +528,7 @@
 
       </div>
     </section>
+    <div class="hero-meter" aria-hidden="true"></div>
     <section class="stat-section" aria-labelledby="swordfighter-heading">
       <h2 class="section-label" id="swordfighter-heading">IMPORTANT QUESTION</h2>
       <div class="card-grid">
@@ -510,5 +559,6 @@
   </form>
 
 <script src="/app.js"></script>
+<script src="/matchups.js"></script>
 </body>
 </html>

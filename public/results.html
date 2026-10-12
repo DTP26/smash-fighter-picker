@@ -51,6 +51,8 @@
       },
     ];
 
+    const allChips = [];
+
     function formatValue(def, rawValue) {
       if (rawValue === undefined || rawValue === null) return "—";
       return def.values[rawValue] ?? String(rawValue);
@@ -79,6 +81,24 @@
       return matches ? "match" : "mismatch";
     }
 
+    function matchStateMatchup(request, fighter, matchups) {
+      character = parseInt(request[0]);
+      requirement = request[1];
+      opponent = parseInt(fighter["id"]);
+
+      playerOpinion = matchups[character][opponent] <= requirement * -1;
+      opponentOpinion = matchups[opponent][character] >= requirement;
+
+      if (playerOpinion && opponentOpinion) {
+        return "match";
+      } else if (Math.abs(playerOpinion - opponentOpinion) > 1) {
+        return "bigMismatch"
+      }
+      else {
+        return "smallMismatch"
+      }
+    }
+
     // splits `total` items into rows of at most `maxPerRow`, keeping row
     // sizes as even as possible and handing any remainder to the middle
     // row(s) first so the block reads as a centered pyramid rather than
@@ -102,35 +122,71 @@
     }
 
 
-    function buildStatList(fighter, mandatory, preferred) {
+    function buildStatList(fighter, mandatory, preferred, matchupRequests, fighters, matchups) {
       const list = document.createElement('div');
       list.className = 'stat-list';
+      console.log(matchupRequests)
+
+      
  
-      const rowSizes = balancedRowSizes(STAT_DEFS.length, 5);
+      const rowSizes = balancedRowSizes(allChips.length, 5);
       let cursor = 0;
+      let statsDone = false;
  
       rowSizes.forEach(size => {
         const rowGroup = document.createElement('div');
         rowGroup.className = 'stat-row-group';
- 
-        STAT_DEFS.slice(cursor, cursor + size).forEach(def => {
-          const state = matchState(def, fighter, mandatory, preferred);
- 
-          const chip = document.createElement('div');
-          chip.className = `stat-chip stat-chip--${state}`;
- 
-          const label = document.createElement('span');
-          label.className = 'stat-chip-label';
-          label.textContent = def.label;
- 
-          const value = document.createElement('span');
-          value.className = 'stat-chip-value';
-          value.textContent = formatValue(def, fighter[def.key]);
- 
-          chip.appendChild(label);
-          chip.appendChild(value);
-          rowGroup.appendChild(chip);
+
+        allChips.slice(cursor, cursor + size).forEach(def => {
+          if ("key" in def) {
+            const state = matchState(def, fighter, mandatory, preferred);
+
+            const chip = document.createElement('div');
+            chip.className = `stat-chip stat-chip--${state}`;
+
+            const label = document.createElement('span');
+            label.className = 'stat-chip-label';
+            label.textContent = def.label;
+            statsDone = def.label == "Effective Range"
+
+            const value = document.createElement('span');
+            value.className = 'stat-chip-value';
+            value.textContent = formatValue(def, fighter[def.key]);
+
+            chip.appendChild(label);
+            chip.appendChild(value);
+            rowGroup.appendChild(chip);
+          } 
+          else {
+            const state = matchStateMatchup(def, fighter, matchups);
+
+            character = parseInt(def[0]);
+            requirement = def[1];
+            opponent = parseInt(fighter["id"]);
+
+            playerOpinion = matchups[character][opponent];
+            opponentOpinion = matchups[opponent][character];
+
+            totalOpinion = (opponentOpinion + playerOpinion * -1) / 2;
+
+            const chip = document.createElement('div');
+            chip.className = `stat-chip stat-chip--${state}`;
+
+            const label = document.createElement('span');
+            label.className = 'stat-chip-value';
+            label.textContent = totalOpinion >= 0.5 ? "Winning" : "Even";
+
+            const img = document.createElement('img');
+            img.className = 'stat-chip-img';
+            img.src = `/fighterIcons/${fighters[def[0] - 1].name}.png`;
+
+            chip.append(label);
+            chip.append(img);
+            rowGroup.appendChild(chip);
+          }
+          
         });
+        
  
         list.appendChild(rowGroup);
         cursor += size;
@@ -142,8 +198,9 @@
 
     (async () => {
       const results = JSON.parse(localStorage.getItem('results')) || [];
-      const { mandatory = {}, preferred = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
+      const { mandatory = {}, preferred = {}, matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
       console.log(results);
+      console.log(matchupRequests.mutual);
 
       const container = document.getElementById('resultsContainer');
 
@@ -151,6 +208,19 @@
       const data = await response.json();
       //const attributes = data.attributes;
       const fighters = data.attributes;
+      const matchups = data.matchups;
+
+      STAT_DEFS.forEach(stat => {
+        if ((stat.key in mandatory || stat.key in preferred)) {
+          allChips.push(stat);
+        }
+      });
+
+      for (const matchup of Object.entries(matchupRequests.chars)) {
+         allChips.push(matchup);
+      }   
+
+      console.log(allChips)
 
       // creates results card for each character selected
       results.forEach(name => {
@@ -177,7 +247,7 @@
         if (fighter) {
           const details = document.createElement('div');
           details.className = 'fighter-details';
-          details.appendChild(buildStatList(fighter, mandatory, preferred));
+          details.appendChild(buildStatList(fighter, mandatory, preferred, matchupRequests.chars, fighters, matchups));
           card.appendChild(details);
         }
 

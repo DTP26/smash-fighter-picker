@@ -14,6 +14,7 @@
   --accent-soft: rgba(124, 108, 240, 0.16);
   --danger: #ff4655;       /* primary call to action */
   --success: #3ddc84;      /* matched attribute */
+  --middle: #ffa200;
 
   --radius-lg: 16px;
   --radius-md: 10px;
@@ -41,34 +42,35 @@ body {
 .hero {
   max-width: 1500px;
   margin: 0 auto;
-  padding: 72px 24px 40px;
   text-align: center;
 }
 
 .title-label {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-size: clamp(4.0rem, 6vw, 4.25rem);
   letter-spacing: -0.01em;
   line-height: 1.05;
   color: var(--accent);
-  margin: 0 0 16px;
+  margin: 6px auto 16px;
+  max-width: 1500px;
+  text-align: center;
 }
 
 .hero-sub {
   font-size: clamp(1rem, 3.5vw, 1.5rem);
   line-height: 1.6;
   color: var(--text-muted);
-  margin: 0 auto;
+  margin: 6px auto 6px;
   max-width: 58ch;
 }
 
 .hero-meter {
-  width: min(600px, 80%);
+  width: min(1300px, 100%);
   height: 4px;
   margin: 28px auto 0;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent));
+  background: var(--text);
 }
 
 /* ===================================================================
@@ -97,6 +99,14 @@ form {
   color: var(--text);
   text-align: center;
   margin: 0 0 18px 4px;
+}
+
+.attributes-label {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 4vw, 3rem);
+  color: var(--text);
+  text-align: center;
+  margin: 0 0 12px 4px;
 }
 
 
@@ -505,10 +515,7 @@ select:focus-visible {
   border-radius: var(--radius-md);
   transition: transform 0.3s ease;
 }
- 
-.fighter-card img:hover {
-  transform: scale(1.1);
-}
+
  
 .fighter-name {
   font-family: var(--font-display);
@@ -536,6 +543,7 @@ select:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 8px;
   width: 100%;
 }
@@ -561,6 +569,12 @@ select:focus-visible {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.02em;
+}
+
+.stat-chip-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
  
 .stat-chip-value {
@@ -612,6 +626,159 @@ select:focus-visible {
   }
 }
 
+/* ===================================================================
+   Matchups (index.html: character icon picker)
+   =================================================================== */
+
+.matchup-intro {
+  max-width: 60ch;
+  margin: 0 auto 20px;
+}
+
+/* The icon grid: as many columns as fit, each at least 72px wide */
+
+.matchup-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  align-items: center;
+}
+
+/* One character = one button. Neutral look first... */
+
+.matchup-tile {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  padding: 6px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.matchup-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none; /* clicks always land on the button, never the img */
+}
+
+
+.matchup-tile:hover {
+  border-color: var(--text-muted);
+  transform: translateY(-2px);
+}
+
+
+
+.matchup-tile:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+
+
+/* ...then the two selected states, driven by the data-state attribute
+   that matchups.js sets on the button */
+
+.matchup-tile[data-state="win"] {
+  background-color: var(--success);
+  border-color: var(--success);
+}
+
+.matchup-tile[data-state="even"] {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* shown when an icon file can't be found (name text replaces the image) */
+.matchup-tile--noicon {
+  color: var(--text-muted);
+}
+
+.matchup-tile--noicon[data-state] {
+  color: #101014;
+}
+
+
+
+/* Controls under the grid: mode toggle, agreement switch, clear button */
+
+.matchup-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+
+
+/* reuses the .radio-group / .segment look, but only two options wide */
+
+.matchup-modes {
+  grid-template-columns: repeat(2, 1fr);
+  width: min(420px, 100%);
+}
+
+
+
+/* color each option like the tiles it paints (must come after the base
+   .segment:has(input:checked) rule, which is why it lives down here) */
+
+.segment--win:has(input:checked) {
+  background-color: var(--success);
+}
+
+
+
+.segment--even:has(input:checked) {
+  background-color: var(--accent);
+}
+
+.matchup-clear {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+
+
+.matchup-clear:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+
+
+.matchup-clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 /* ===================================================================
    Responsive
@@ -633,6 +800,12 @@ select:focus-visible {
   .card-body--special {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .matchup-grid {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+    gap: 6px;
+    padding: 10px;
   }
 
   .submit-btn {
