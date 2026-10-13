@@ -13,15 +13,21 @@
 
 
   <h1 class="title-label">Find your ideal Smash Ultimate character!</h1>
-  <div class="hero-meter" aria-hidden="true"></div>
+  
+  <div class="seperator" aria-hidden="true"></div>
 
   <form id="preferencesForm">
 
     <section class="stat-section" aria-labelledby="matchups-heading">
       <h2 class="section-label" id="matchups-heading">Matchups</h2>
-      <p class="hero-sub matchup-intro">
-        Pick a mode, then click characters to mark how you want to do against them.
-        Click a character again in the same mode to clear it.
+      <p class="section-desc">
+        Select winning/at least even and click on characters to match how you'd like selected characters to perform against them.
+        <br><br> Clear matchups by either clicking with the same mode, or clicking clear all.
+        <br><br> Matchups are determined based on high/top level opinions from players of BOTH sides of a matchup.
+                 Toggle 'Mutual Agreement Required' if you want both sides to agree on your ideal ratio for the matchup.
+        <br><br> Example: Lets say you want a character that wins against Mario. Assuming mutual is/isn't toggled, Mario players would 
+        have to believe they lose AND/OR players of the other character would have to believe they win.
+        
       </p>
  
       <!-- matchups.js fills this with one <button class="matchup-tile"> per character -->
@@ -40,30 +46,25 @@
           </label>
         </div>
  
-        <!-- one global setting for every matchup above, not per character -->
         <label class="toggle">
           <input type="checkbox" id="matchupAgree" value="1">
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          <span class="toggle-text">Both sides must agree on the matchup</span>
+          <span class="toggle-text">Mutual Agreement Required</span>
         </label>
     
         <button type="button" class="matchup-clear" id="matchupClear">Clear all</button>
       </div>
     </section>
 
-    <div class="hero-meter" aria-hidden="true"></div>
+    <div class="seperator" aria-hidden="true"></div>
 
-    <h2 class="section-label" id="movement-heading">Attributes</h2>
-
-
-    <header class="hero">
-       <p class="hero-sub">Put attributes you'd like your character to have on 'Preferred'. <br>Your result will be as close to as many of your preferred stats as possible.<br> <br>
+    <section class="stat-section" aria-labelledby="attributes-heading">
+      <h2 class="section-label" id="movement-heading">Attributes</h2>
+       <p class="section-desc">Put attributes you'd like your character to have on 'Preferred'. <br>Your result will be as close to as many of your preferred stats as possible.<br> <br>
       Attributes that you NEED to have can be set to 'Mandatory'. <br> Do note that too many requirements may lead finding no results! <br>
       <br> Leave attributes that you don't care about on 'Ignore'. <br> They will not be factored into the search. 
     </p>
-    </header>
-   
-     <div class="hero-meter" aria-hidden="true"></div>
+    </section>
 
     <section class="stat-section" aria-labelledby="movement-heading">
       <h2 class="attributes-label" id="movement-heading">Base Stats</h2>
@@ -303,7 +304,7 @@
       </div>
     </section>
 
-    <div class="hero-meter" aria-hidden="true"></div>
+    <div class="seperator" aria-hidden="true"></div>
 
     <section class="stat-section" aria-labelledby="toolkit-heading">
       <h2 class="attributes-label" id="toolkit-heading">Toolkit</h2>
@@ -486,7 +487,7 @@
       </div>
     </section>
 
-    <div class="hero-meter" aria-hidden="true"></div>
+    <div class="seperator" aria-hidden="true"></div>
 
     <section class="stat-section" aria-labelledby="playstyle-heading">
       <h2 class="attributes-label" id="playstyle-heading">Playstyle</h2>
@@ -528,7 +529,7 @@
 
       </div>
     </section>
-    <div class="hero-meter" aria-hidden="true"></div>
+    <div class="seperator" aria-hidden="true"></div>
     <section class="stat-section" aria-labelledby="swordfighter-heading">
       <h2 class="section-label" id="swordfighter-heading">IMPORTANT QUESTION</h2>
       <div class="card-grid">

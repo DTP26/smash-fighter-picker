@@ -1,9 +1,15 @@
+// Express is the Node.js application 
 const express = require("express");
+
+//node-postgres is the PostgreSQL client
 const { Pool } = require("pg");
+
+// dotenv used to secure connection with database
 require("dotenv").config();
 
 const app = express();
 
+// ensures proper permissions to access database
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -11,7 +17,7 @@ const pool = new Pool({
     }
 });
 
-
+// confirms whether or not db connection was successful
 pool.query("SELECT NOW()", (err, result) => {
     if (err) {
         console.error("❌ Database connection failed:", err);
@@ -19,6 +25,13 @@ pool.query("SELECT NOW()", (err, result) => {
         console.log("✅ Connected to Neon:", result.rows[0]);
     }
 });
+
+/*
+    Defines and loads the attributes array
+    One row per character, primary keyed by an int ID
+    Each column is a different attribute, all either ints between -1 and 1 or booleans
+    Only exception is the effective range column, which ranges from [1, 6]
+*/ 
 
 let attributes = [];
 
@@ -35,6 +48,14 @@ async function loadAttributes() {
         throw error;
     }
 }
+
+/* 
+    Defines the matchups object.
+    Each row contains a player_id, opponent_id, and ratio value.
+    Player and opponent ids align with the ones established in the attributes 
+    The ratio is either 1 (winning), 0 (even), or -1 (losing), and it 
+    desribes how players of the player_id character think they do vs the opposing character
+*/
 
 let matchups = {};
 
@@ -55,6 +76,8 @@ async function loadMatchups() {
     }
 }
 
+// Relatively quick request due to all data being loaded on site startup
+
 app.get("/api/data", (req, res) => {
     res.json({
         attributes,
@@ -62,11 +85,13 @@ app.get("/api/data", (req, res) => {
     });
 });
 
-
+// middleware for parsing json and static files 
 app.use(express.json());
 app.use(express.static("public"));
 
-const PORT = process.env.PORT || 3000;
+// connects to port 3000, loads all the data, and starts the server
+
+const PORT = 3000;
 
 async function startServer() {
     try {
