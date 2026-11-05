@@ -17,7 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // placeholder for now until matchups table is finished 
     // currently goes up to Luigi
 
-    results = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    results = new Set();
+    for (let i = 1; i < 31; i++) {
+      results.add(i);
+    }
 
     // initially start with set of all fighters. It will remove any that don't meet the requirements 
   
