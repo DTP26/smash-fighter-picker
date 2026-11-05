@@ -174,7 +174,7 @@ select {
   -webkit-appearance: none;
   width: 100%;
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: var(--text);
   background-color: var(--surface-2);
   border: 1px solid var(--border);
@@ -222,7 +222,7 @@ select:focus-visible {
   padding: 9px 6px;
   border-radius: 7px;
   cursor: pointer;
-  font-size: 0.82rem;
+  font-size: 1.2rem;
   color: var(--text-muted);
   transition: background-color 0.15s ease, color 0.15s ease;
 }
@@ -309,7 +309,7 @@ select:focus-visible {
 }
 
 .toggle-text {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: var(--text-muted);
 }
 
@@ -640,8 +640,6 @@ select:focus-visible {
 /* One character = one button. Neutral look first... */
 
 .matchup-tile {
-  appearance: none;
-  -webkit-appearance: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -739,14 +737,13 @@ select:focus-visible {
 }
 
 .matchup-clear {
-  appearance: none;
-  -webkit-appearance: none;
   background: transparent;
+  background-color: var(--danger);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  color: var(--text-muted);
+  color: var(--text);
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   padding: 8px 16px;
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
