@@ -85,7 +85,7 @@ form {
 .section-label {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(2rem, 8vw, 5rem);
+  font-size: clamp(6rem, 16vw, 5rem);
   text-decoration: underline;
   color: var(--text);
   text-align: center;
@@ -94,7 +94,7 @@ form {
 
 .attributes-label {
   font-family: var(--font-display);
-  font-size: clamp(1rem, 4vw, 3rem);
+  font-size: clamp(64px, 4vw, 3rem);
   color: var(--text);
   text-align: center;
   margin: 0 0 12px 4px;
@@ -103,7 +103,7 @@ form {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(500px, 100%), 1fr));
   gap: 20px;
   justify-content:center
 }
@@ -125,16 +125,16 @@ form {
 .stat-label {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1.75rem;
+  font-size: 2.5rem;
   color: var(--text);
   margin: 0 0 6px;
 }
 
 .stat-desc {
-  font-size: 0.85rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--text-muted);
-  margin: 0 0 0.8rem;
+  margin: 0 0 6px;
 }
 
 .playstyle-disclaimer {
@@ -170,9 +170,7 @@ form {
 }
 
 select {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
+  width: 50%;
   font-family: var(--font-body);
   font-size: 1.2rem;
   color: var(--text);
