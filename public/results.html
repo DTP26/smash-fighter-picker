@@ -86,12 +86,14 @@
       requirement = request[1];
       opponent = parseInt(fighter["id"]);
 
-      playerOpinion = matchups[character][opponent] <= requirement * -1;
-      opponentOpinion = matchups[opponent][character] >= requirement;
+      playerOpinion = matchups[character][opponent] * -1
+      opponentOpinion = matchups[opponent][character]
 
-      if (playerOpinion && opponentOpinion) {
+      if (playerOpinion >= requirement && opponentOpinion >= requirement) {
         return "match";
-      } else if (Math.abs(playerOpinion - opponentOpinion) > 1) {
+      } 
+      // edge case for both sides thinking they win the matchup  
+      else if (Math.abs(playerOpinion) + opponentOpinion == 2) {
         return "bigMismatch"
       }
       else {
@@ -125,7 +127,6 @@
     function buildStatList(fighter, mandatory, preferred, matchupRequests, fighters, matchups) {
       const list = document.createElement('div');
       list.className = 'stat-list';
-      console.log(matchupRequests)
 
       
  
@@ -164,22 +165,33 @@
             requirement = def[1];
             opponent = parseInt(fighter["id"]);
 
-            playerOpinion = matchups[character][opponent];
-            opponentOpinion = matchups[opponent][character];
+            // opinion of character we are trying to beat, so them losing should be positive
+            // hence why we are multiplying by -1 to flip the value
+            playerOpinion = matchups[character][opponent] * -1;
+            const playerText = playerOpinion == 1 ? "Winning" : playerOpinion == 0 ? "Even" : "Losing";
 
-            totalOpinion = (opponentOpinion + playerOpinion * -1) / 2;
+            opponentOpinion = matchups[opponent][character];
+            const opponentText = opponentOpinion == 1 ? "Winning" : opponentOpinion == 0 ? "Even" : "Losing";
 
             const chip = document.createElement('div');
             chip.className = `stat-chip stat-chip--${state}`;
 
             const label = document.createElement('span');
             label.className = 'stat-chip-value';
-            label.textContent = totalOpinion >= 0.5 ? "Winning" : "Even";
+            if (playerText == opponentText) {
+              label.textContent = playerText;
+            } else {
+              label.textContent = playerText + " / " + opponentText;
+            }
 
             const img = document.createElement('img');
             img.className = 'stat-chip-img';
-            img.src = `/fighterIcons/${fighters[def[0] - 1].name}.png`;
-
+            if (fighters[def[0] - 1].name == "Squirtle" || fighters[def[0] - 1].name == "Ivysaur" || fighters[def[0] - 1].name == "Charizard") {
+              img.src = `/fighterIcons/Pokemon Trainer.png`;
+            } 
+            else {
+              img.src = `/fighterIcons/${fighters[def[0] - 1].name}.png`;
+            }
             chip.append(label);
             chip.append(img);
             rowGroup.appendChild(chip);
@@ -220,8 +232,6 @@
          allChips.push(matchup);
       }   
 
-      console.log(allChips)
-
       // creates results card for each character selected
       results.forEach(name => {
         const fighter = fighters.find(f => f.name === name);
@@ -233,12 +243,18 @@
         portrait.className = 'fighter-portrait';
 
         const img = document.createElement('img');
-        img.src = `/fighterRenders/${name}.png`;
-        img.alt = name;
-
         const label = document.createElement('div');
         label.className = 'fighter-name';
-        label.textContent = name;
+
+        if (name == "Squirtle" || name == "Ivysaur" || name == "Charizard") {
+          img.src = `/fighterRenders/Pokemon Trainer.png`;
+          img.alt = "Pokemon Trainer";
+          label.textContent = "Pokemon Trainer";
+        } else {
+          img.src = `/fighterRenders/${name}.png`;
+          img.alt = name;
+          label.textContent = name;
+        }
 
         portrait.appendChild(img);
         portrait.appendChild(label);

@@ -484,11 +484,6 @@ select:focus-visible {
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
  
-.fighter-card:hover {
-  transform: translateY(-2px);
-  border-color: #f4f4f6;
-}
- 
 .fighter-portrait {
   display: flex;
   flex-direction: column;
@@ -508,7 +503,7 @@ select:focus-visible {
  
 .fighter-name {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-size: clamp(3.0rem, 5vw, 2.5rem);
   font-weight: 600;
   color: var(--text);
   text-align: center;
@@ -553,7 +548,7 @@ select:focus-visible {
 }
  
 .stat-chip-label {
-  font-size: 0.62rem;
+  font-size: 0.62em;
   line-height: 1.2;
   color: var(--text-muted);
   text-transform: uppercase;

@@ -15,12 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function matchupMatch(requests, matchups, mutual) {
     // placeholder for now until matchups table is finished 
-    // currently goes up to Luigi
+    // currently goes up to Mega man
 
     results = new Set();
-    for (let i = 1; i < 31; i++) {
+    for (let i = 1; i < 52; i++) {
       results.add(i);
     }
+
+    // remove extra ids taken up by pokemon trainer and pyra/mythra
+    results.delete(39);
+    results.delete(40);
+    results.delete(87);
 
     // initially start with set of all fighters. It will remove any that don't meet the requirements 
   
