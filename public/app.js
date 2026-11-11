@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     const attributes = data.attributes;
     const matchups = data.matchups;
-   
+
     const matchupResults = matchupMatch(matchupRequests.chars, matchups, matchupRequests.mutual);
     const results = attributeMatch(mandatory, preferred, attributes, mii_sword, matchupResults);
 

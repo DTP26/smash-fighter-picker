@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // variables for character icon paths and extensions just in case they require chaninging later
   const ICON_PATH = "/fighterIcons";
   const ICON_EXT = "png";
+  const STORAGE_KEY = "matchupPicker";
 
   // refers to the grid of clickable character icons 
   const grid = document.getElementById("matchupGrid");
@@ -21,6 +22,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // refers to whether or not both sides of a matchup must agree on the requested ratio
   const mutualBox = document.getElementById("matchupAgree");
+  mutualBox?.addEventListener("change", saveState);
+  
   if (!grid) return; // page doesn't have the matchup section
 
   
@@ -110,6 +113,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  restoreState(); // re-applies saved picks to the tiles
+
    /* Description: color codes tiles based on whether the user wants to beat, 
                   go even with, or is indiffirent on the character
 
@@ -133,6 +138,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     tile.setAttribute("aria-pressed", value === undefined ? "false" : "true");
   }
 
+  // Saves the current picks and the agreement switch. sessionStorage lasts for
+  // this tab only, so it survives the back button but not a brand-new visit.
+  function saveState() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        chars: selections,
+        mutual: mutualBox ? mutualBox.checked : false
+      }));
+    } catch (err) {
+      // storage can be blocked (private mode, etc.); the picker still works without it
+    }
+  }
+
+  // Re-applies saved picks to the tiles. Must run after the grid is built.
+  function restoreState() {
+    let saved;
+    try {
+      saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+    } catch (err) {
+      return;
+    }
+    if (!saved) return;
+
+    // loop over the tiles that actually exist, so a saved id with no tile is ignored
+    grid.querySelectorAll(".matchup-tile").forEach(tile => {
+      const id = tile.dataset.characterId;
+      const value = saved.chars?.[id];
+      if (value === 0 || value === 1) {
+        selections[id] = value;
+        paintTile(tile, value);
+      }
+    });
+
+  if (mutualBox) mutualBox.checked = Boolean(saved.mutual);
+}
+
   // One listener on the grid (event delegation) instead of one per tile.
   grid.addEventListener("click", (e) => {
     const tile = e.target.closest(".matchup-tile");
@@ -149,12 +190,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       selections[id] = mode;     
     }
     paintTile(tile, selections[id]);
+    saveState();
   });
 
   // clears all tiles upon clicking 
   clearBtn?.addEventListener("click", () => {
     Object.keys(selections).forEach(id => delete selections[id]);
     grid.querySelectorAll(".matchup-tile").forEach(tile => paintTile(tile, undefined));
+    saveState();
   });
 
   // What app.js reads at submit time -

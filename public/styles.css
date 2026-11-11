@@ -695,8 +695,6 @@ select:focus-visible {
   margin-top: 24px;
 }
 
-
-
 /* reuses the .radio-group / .segment look, but only two options wide */
 
 .matchup-modes {
@@ -714,9 +712,12 @@ select:focus-visible {
 }
 
 
-
 .segment--even:has(input:checked) {
   background-color: var(--accent);
+}
+
+.segment--irrelevant:has(input:checked) {
+  background-color: var(--text-muted);
 }
 
 .matchup-clear {
