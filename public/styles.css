@@ -170,7 +170,7 @@ form {
 }
 
 select {
-  width: 30%;
+  width: 80%;
   text-align: center;
   font-family: var(--font-body);
   font-size: 1.2rem;
