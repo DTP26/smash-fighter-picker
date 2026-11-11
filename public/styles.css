@@ -170,7 +170,8 @@ form {
 }
 
 select {
-  width: 50%;
+  width: 30%;
+  text-align: center;
   font-family: var(--font-body);
   font-size: 1.2rem;
   color: var(--text);
@@ -186,18 +187,7 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
-.select-wrap::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--text-muted);
-  border-bottom: 2px solid var(--text-muted);
-  transform: translateY(-65%) rotate(45deg);
-  pointer-events: none;
-}
+
 
 /* Segmented mandatory / preferred / ignore control */
 
