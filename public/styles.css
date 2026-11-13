@@ -303,10 +303,21 @@ select:focus-visible {
 
 /* Mii Swordfighter special card */
 
+.form-group--special {
+   background-color: var(--bg);
+   border: none;
+   border-radius: var(--radius-lg);
+   max-width: 100%;
+}
+
 .card-body--special {
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
+}
+
+.stat-label--mii {
+  font-size: 3.5rem;
 }
 
 .mii-render {

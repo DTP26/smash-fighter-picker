@@ -84,11 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
             character.attributeScore += 1;
             
           // attribute is matched exactly
-          } else if (attributes[character.id][attribute.name] == attribute.value) {
+          } else if (attributes[character.id - 1][attribute.name] == attribute.value) {
             character.attributeScore += 1 * (attribute.importance + 1);
           }
           // attribute is not close to matching
-          else if (Math.abs(attributes[character.id][attribute.name] - attribute.value) > 1) {
+          else if (Math.abs(attributes[character.id - 1][attribute.name] - attribute.value) > 1) {
             character.attributeScore += -1 * (attribute.importance + 1);
           }
         }
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // submits results of the attribute forms into mandatory and preferred 
     // based on how the user marked their preferences
     
-    const attributeRequests = [];
+    let attributeRequests = [];
     let mii_sword = true;
 
     formGroups.forEach(group => {
@@ -159,12 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (statName == "mii_sword") {
           mii_sword = checkbox.checked ? 1 : 0;
         }
-        else {
+        else if (statImportance != -1) {
           attributeRequests.push({name: statName, value: checkbox.checked ? 1 : -1, importance: statImportance});
         }
       } else if (select) {
         const statName = select.name;
-        attributeRequests.push({name:select.name, value: select.value, importance: statImportance});
+        if (statImportance != -1) {
+          attributeRequests.push({name:select.name, value: select.value, importance: statImportance});
+        }
       }
     });
 
@@ -212,14 +214,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     scores.sort((a, b) => b.totalScore - a.totalScore);
-
     console.log(scores);
-    werfhjbwied
-
     // stores characters to be displayed on results screen
     localStorage.setItem(
         "results",
-        JSON.stringify(Array.from(results))
+        JSON.stringify(scores)
     );
 
     // stash what was actually requested so results.html can highlught requested attributes/matchups

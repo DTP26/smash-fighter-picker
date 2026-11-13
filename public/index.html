@@ -19,12 +19,8 @@
     <section aria-labelledby="matchups-heading">
       <h2 class="section-label" id="matchups-heading">Matchups</h2>
       <p class="section-desc">
-        Select winning/at least even and click on characters to match how you'd like selected characters to perform against them.
+        Select winning/at least even and click on characters to match how you'd like to perform against them in the matchup.
         <br><br> Clear matchups by either clicking with the same mode, or clicking clear all.
-        <br><br> Matchups are determined based on high/top level opinions from players of BOTH sides of a matchup.
-                 Toggle 'Mutual Agreement Required' if you want both sides to agree on your ideal ratio for the matchup.
-        <br><br> Example: Lets say you want a character that wins against Mario. Assuming mutual is/isn't toggled, Mario players would 
-        have to believe they lose AND/OR players of the other character would have to believe they win.
         
       </p>
  
@@ -43,12 +39,6 @@
             <span>At least even</span>
           </label>
         </div>
- 
-        <label class="toggle">
-          <input type="checkbox" id="matchupAgree" value="1">
-          <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          <span class="toggle-text">Mutual Agreement Required</span>
-        </label>
     
         <button type="button" class="matchup-clear" id="matchupClear">Clear all</button>
       </div>
@@ -58,9 +48,9 @@
 
     <section class="stat-section" aria-labelledby="attributes-heading">
       <h2 class="section-label" id="movement-heading">Attributes</h2>
-       <p class="section-desc">Put attributes you'd like your character to have on 'Preferred'. <br>Your result will be as close to as many of your preferred stats as possible.<br> <br>
-      Attributes that you NEED to have can be set to 'Mandatory'. <br> Too many mandatoryrequirements may lead to finding no results! <br>
-      <br> Leave attributes that you don't care about on 'Ignore'. <br> They will not be factored into the search. 
+       <p class="section-desc">Put attributes you'd like your character to have on <span class="legend legend--smallMismatch">'Preferred'.</span>
+      <br>Attributes that you'd like to prioritize can be set to <span class="legend legend--match">'High Priority'</span>.
+      <br> Leave attributes that you don't care about on 'Ignore'. 
     </p>
     </section>
 
@@ -86,12 +76,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Run Speed requirement">
               <label class="segment segment--win">
-                <input type="radio" name="runSpeedReq" id="runSpeedMandatory" value="1">
-                <span title="Characters will only be recommended if they have this attribute.">Mandatory</span>
+                <input type="radio" name="runSpeedReq" id="runSpeedHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="runSpeedReq" id="runSpeedPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="runSpeedReq" id="runSpeedIgnore" value="-1" checked>
@@ -119,12 +109,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Initial Dash requirement">
               <label class="segment segment--win">
-                <input type="radio" name="initialDashReq" id="initialDashMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="initialDashReq" id="initialDashHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="initialDashReq" id="initialDashPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="initialDashReq" id="initialDashIgnore" value="-1" checked>
@@ -152,12 +142,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Weight requirement">
               <label class="segment segment--win">
-                <input type="radio" name="weightReq" id="weightMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="weightReq" id="weightHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="weightReq" id="weightPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="weightReq" id="weightIgnore" value="-1" checked>
@@ -185,12 +175,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Air Speed requirement">
               <label class="segment segment--win">
-                <input type="radio" name="airSpeedReq" id="airSpeedMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="airSpeedReq" id="airSpeedHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="airSpeedReq" id="airSpeedPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="airSpeedReq" id="airSpeedIgnore" value="-1" checked>
@@ -218,12 +208,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Air Acceleration requirement">
               <label class="segment segment--win">
-                <input type="radio" name="airAccelerationReq" id="airAccelerationMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="airAccelerationReq" id="airAccelerationHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="airAccelerationReq" id="airAccelerationPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="airAccelerationReq" id="airAccelerationIgnore" value="-1" checked>
@@ -251,12 +241,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Normal fall requirement">
               <label class="segment segment--win">
-                <input type="radio" name="normalFallReq" id="normalFallMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="normalFallReq" id="normalFallHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="normalFallReq" id="normalFallPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="normalFallReq" id="normalFallIgnore" value="-1" checked>
@@ -284,12 +274,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Fast fall requirement">
               <label class="segment segment--win">
-                <input type="radio" name="fastfallReq" id="fastfallMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="fastfallReq" id="fastfallHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="fastfallReq" id="fastfallPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="fastfallReq" id="fastfallIgnore" value="-1" checked>
@@ -322,12 +312,12 @@
             </label>
             <div class="radio-group" role="radiogroup" aria-label="Fast Escape Option requirement">
               <label class="segment segment--win">
-                <input type="radio" name="fastEscapeReq" id="fastEscapeMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="fastEscapeReq" id="fastEscapeHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="fastEscapeReq" id="fastEscapePreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="fastEscapeReq" id="fastEscapeIgnore" value="-1" checked>
@@ -351,12 +341,12 @@
             </label>
             <div class="radio-group" role="radiogroup" aria-label="Multiple Double Jumps requirement">
               <label class="segment segment--win">
-                <input type="radio" name="multipleJumpsReq" id="multipleJumpsMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="multipleJumpsReq" id="multipleJumpsHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="multipleJumpsReq" id="multipleJumpsPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="multipleJumpsReq" id="multipleJumpsIgnore" value="-1" checked>
@@ -380,12 +370,12 @@
             </label>
             <div class="radio-group" role="radiogroup" aria-label="Anti Projectile Move requirement">
               <label class="segment segment--win">
-                <input type="radio" name="antiProjectileReq" id="antiProjectileMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="antiProjectileReq" id="antiProjectileHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="antiProjectileReq" id="antiProjectilePreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="antiProjectileReq" id="antiProjectileIgnore" value="-1" checked>
@@ -409,12 +399,12 @@
             </label>
             <div class="radio-group" role="radiogroup" aria-label="Has Item requirement">
               <label class="segment segment--win">
-                <input type="radio" name="hasItemReq" id="hasItemMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="hasItemReq" id="hasItemHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="hasItemReq" id="hasItemPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="hasItemReq" id="hasItemIgnore" value="-1" checked>
@@ -438,12 +428,12 @@
             </label>
             <div class="radio-group" role="radiogroup" aria-label="Has Zair requirement">
               <label class="segment segment--win">
-                <input type="radio" name="hasZairReq" id="hasZairMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="hasZairReq" id="hasZairHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="hasZairReq" id="hasZairPreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="hasZairReq" id="hasZairIgnore" value="-1" checked>
@@ -467,12 +457,12 @@
             </label>
             <div class="radio-group" role="radiogroup" aria-label="Significant change requirement">
               <label class="segment segment--win">
-                <input type="radio" name="sigChangeReq" id="sigChangeMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="sigChangeReq" id="sigChangeHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="sigChangeReq" id="sigChangePreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="sigChangeReq" id="sigChangeIgnore" value="-1" checked>
@@ -489,7 +479,7 @@
 
     <section class="stat-section" aria-labelledby="playstyle-heading">
       <h2 class="attributes-label" id="playstyle-heading">Playstyle</h2>
-      <p class="playstyle-disclaimer">Attributes in this section are much less objective than the other categories and are actively being revised. I recommend using Preferred instead of Mandatory.</p>
+      <p class="playstyle-disclaimer">Attributes in this section are much less objective than the other categories and are actively being revised. I recommend using Preferred instead of High Priority.</p>
       <div class="card-grid">
 
         <div class="form-group">
@@ -510,12 +500,12 @@
             </div>
             <div class="radio-group" role="radiogroup" aria-label="Effective Range requirement">
               <label class="segment segment--win">
-                <input type="radio" name="effectiveRangeReq" id="effectiveRangeMandatory" value="1">
-                <span title="Character will not be considered unless they have this attribute.">Mandatory</span>
+                <input type="radio" name="effectiveRangeReq" id="effectiveRangeHigh Priority" value="1">
+                <span title="Attribute will be HEAVILY considered when recomending characters.">High Priority</span>
               </label>
               <label class="segment segment--even">
                 <input type="radio" name="effectiveRangeReq" id="effectiveRangePreferred" value="0">
-                <span title="Characters will have a higher chance of selection the closer they are to this attribute.">Preferred</span>
+                <span title="Attribute will be considered when recomending characters.">Preferred</span>
               </label>
               <label class="segment segment--irrelevant">
                 <input type="radio" name="effectiveRangeReq" id="effectiveRangeIgnore" value="-1" checked>
@@ -530,10 +520,8 @@
     <div class="seperator" aria-hidden="true"></div>
     <section class="stat-section" aria-labelledby="swordfighter-heading">
       <h2 class="section-label" id="swordfighter-heading">IMPORTANT QUESTION</h2>
-      <div class="card-grid">
-
         <div class="form-group form-group--special">
-          <label class="stat-label" for="miiSword">Do you consent to Mii Swordfighter?</label>
+          <label class="stat-label--mii" for="miiSword">Do you consent to Mii Swordfighter?</label>
           <p class="stat-desc"></p>
           <div class="card-body card-body--special">
             <img src="/fighterRenders/Mii Swordfighter.png" width="200" alt="Mii Swordfighter" class="mii-render">
@@ -544,8 +532,6 @@
             </label>
           </div>
         </div>
-
-      </div>
     </section>
 
     <br>

@@ -21,8 +21,6 @@
 
   <div class="results-container" id="resultsContainer"></div>
 
-  <div class="empty-message"> No characters match your criteria! <br>Try again with <u>less mandatory preferences!</u></div>
-
   <div class="submit-section">
     <a href="index.html" class="return-btn">Try Again?</a>
   </div>
@@ -204,15 +202,16 @@
         cursor += size;
       });
  
+      
       return list;
 
     }
 
     (async () => {
       const results = JSON.parse(localStorage.getItem('results')) || [];
-      const { mandatory = {}, preferred = {}, matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
+      const { attributeRequests = [], matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
       console.log(results);
-      console.log(matchupRequests.mutual);
+      console.log(attributeRequests);
 
       const container = document.getElementById('resultsContainer');
 
@@ -222,18 +221,19 @@
       const fighters = data.attributes;
       const matchups = data.matchups;
 
-      STAT_DEFS.forEach(stat => {
+      /*STAT_DEFS.forEach(stat => {
         if ((stat.key in mandatory || stat.key in preferred)) {
           allChips.push(stat);
         }
-      });
+      });*/
 
-      for (const matchup of Object.entries(matchupRequests.chars)) {
+      /*for (const matchup of Object.entries(matchupRequests.chars)) {
          allChips.push(matchup);
-      }   
+      }   */
 
       // creates results card for each character selected
-      results.forEach(name => {
+      results.forEach(character => {
+        let name = character.name
         const fighter = fighters.find(f => f.name === name);
 
         const card = document.createElement('div');
@@ -259,13 +259,6 @@
         portrait.appendChild(img);
         portrait.appendChild(label);
         card.appendChild(portrait);
-
-        if (fighter) {
-          const details = document.createElement('div');
-          details.className = 'fighter-details';
-          details.appendChild(buildStatList(fighter, mandatory, preferred, matchupRequests.chars, fighters, matchups));
-          card.appendChild(details);
-        }
 
         container.appendChild(card);
       });
