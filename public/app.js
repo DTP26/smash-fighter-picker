@@ -10,59 +10,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
         matchups: Object representing all of the matchup opinions contained in the matchups table
 
-        mutual: boolean determining whether or not both sides of a matchup must agree on the requested ratio
+        scores: Scores per character to update based on how they match user requests
   */
 
-  function matchupMatch(requests, matchups, mutual) {
-    // placeholder for now until matchups table is finished 
-    // currently goes up to Mega man
-
-    results = new Set();
-    for (let i = 1; i < 52; i++) {
-      results.add(i);
-    }
-
-    // remove extra ids taken up by pokemon trainer and pyra/mythra
-    results.delete(39);
-    results.delete(40);
-    results.delete(87);
-
-    // initially start with set of all fighters. It will remove any that don't meet the requirements 
+  function matchupMatch(requests, matchups, scores) {
   
     // requirement represents whether we must win against (1) or at least go even (0) vs the id characater
-    for (const [id, requirement] of Object.entries(requests)) {
+    for (character of scores) {
+      for (const [id, requirement] of Object.entries(requests)) {
+          // 'target' refers to the character the user is trying to beat 
+          target = parseInt(id);
 
-        // create of copy of results to iterate through so we dynamically lower number of inner loops as options are deleted
-        resultsCopy = new Set(results);
-        for (const opponent of resultsCopy) { 
+          // 'current' refers to the character we are currently comparing to the target
+          current = character.id;
 
-          // check opinions of matchups from both the character and the opponent
+          // edge case for pokemon trainer and pyra & mythra
+          if (current == 39 || current == 40) {
+            current = 38;
+          } else if (current == 87) {
+            current = 86;
+          }
+
+          // check opinions of matchups from players of the target and the current
           // matchups[character1][character2] represents how players of character1 think they do vs the character2
-          character = parseInt(id);
-          playerOpinion = matchups[character][opponent] <= requirement * -1;
-          opponentOpinion = matchups[opponent][character] >= requirement;
+          
+          targetOpinion = matchups[target][current] * -1;
+          currentOpinion = matchups[current][target];
 
-          // if mutual is true, both opinions must agree
-          // if mutual is false, either opinion is sufficient
-          if ((mutual && !(playerOpinion && opponentOpinion)) || (!mutual && !(playerOpinion || opponentOpinion))) {
-             results.delete(opponent);
+          // character score goes up by 0.5 per side that agrees on the requirement (mutual agreement gives full point)
+
+          if (targetOpinion >= requirement) {
+            character.matchupScore += 1;
           } 
+          else if (targetOpinion - requirement == -2) {
+            character.matchupScore -= 1;
+          }
+
+          if (currentOpinion >= requirement) {
+            character.matchupScore += 1
+          }
+           else if (currentOpinion - requirement == -2) {
+            character.matchupScore -= 1;
+          }
+
         }
     }
-    return results;
+    
   }
 
   /* 
      Description: Chooses the best possible character(s) based on requested attributes 
 
      Parameters:
-        mandatory: an object containing attributes that MUST be matched,
-                   which are in pairs of (attributeName: requestedValue).
-                   Any characters not matching everything here will be discarded
-
-        preferred: an object containing attributes that aren't mandatory, but increase
-                   likelihood of selection upon matching. Same type of paird as mandatory
-
+        requests: an object containing attributes that the user wants matched, 
+                  contains the attribute name, requested value, and importance
+                  
         attributes: array representing the attributes database described in server.js.
                     Used to check whether characters match the attributes requested in 
                     mandatory and preferred.
@@ -70,59 +72,30 @@ document.addEventListener("DOMContentLoaded", () => {
         mii_sword: boolean determining whether or not Mii Swordfighter will be allowed in 
                    the final results. If false, he will be removed regardless of other matches.
 
-        remaining: The characters IDs remaining after matchupMatch is performed. Primarily 
-                   exists to lower runtime in the event that some characters are already 
-                   disqualified due to not having the requested matchups.
+        scores: Scores per character to update based on how they match user requests
   */  
 
-  function attributeMatch(mandatory, preferred, attributes, mii_sword, remaining) {
+  function attributeMatch(requests, attributes, mii_sword, scores) {
 
-      // initial value for score used to determine which characters are chosen 
-      // irrelvant in the event of no 'preferred' attributes
-      let currBest = -999;
-
-      let results = new Set();
-
-      remaining.forEach((fighter) => {
-
-        // first determine if fighter matches mandatory requirements
-        let valid = true;
-        const currFighter = attributes[fighter - 1];
-       
-        for (const [attribute, value] of Object.entries(mandatory)) {
-          // value equaling 6 is an edge case for characters with highly variable effective range
-          valid = valid && (currFighter[attribute] == value || currFighter[attribute] == 6);
+      for (character of scores) {
+        for (const attribute of requests) {
+          // edge case for characters with highly variable effective range
+          if (attribute.name == "Effective Range" && attributes[character.id]["Effective Range"] == 6) {
+            character.attributeScore += 1;
+            
+          // attribute is matched exactly
+          } else if (attributes[character.id][attribute.name] == attribute.value) {
+            character.attributeScore += 1 * (attribute.importance + 1);
+          }
+          // attribute is not close to matching
+          else if (Math.abs(attributes[character.id][attribute.name] - attribute.value) > 1) {
+            character.attributeScore += -1 * (attribute.importance + 1);
+          }
         }
-        
-        // if mandatory needs are met, calculate preferred score
-        if (valid) {
-          let score = 0;
-          // subtract based on how far from desired the character is
-          for (const [attribute, value] of Object.entries(preferred)) {
-            // edge case for characters with highly variable effective range
-            if (currFighter[attribute] != 6) {
-              score += Math.abs(Number(currFighter[attribute]) - value) * -1
-            }
-          }
-          // reset results if new best match is found
-          if (score > currBest) {
-              currBest = score;
-              results.clear();
-          }
-          // add character if they match the score threshold
-          if (score == currBest) {
-            results.add(currFighter.name);
-          }
-        } 
-      })
-
-      // deletes mii swordfighter from the set if user doesn't consent to them
-
-      if (!mii_sword) {
-        results.delete("Mii Swordfighter")
+        if (!mii_sword && character.id == 57) {
+          scores.delete(character)
+        }
       }
-    
-      return results;
   }
 
   // form groups represent each of the attribute boxes
@@ -167,8 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // submits results of the attribute forms into mandatory and preferred 
     // based on how the user marked their preferences
     
-    const mandatory = {};
-    const preferred = {};
+    const attributeRequests = [];
     let mii_sword = true;
 
     formGroups.forEach(group => {
@@ -187,19 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (statName == "mii_sword") {
           mii_sword = checkbox.checked ? 1 : 0;
         }
-        else if (statImportance == 1) {
-          mandatory[statName] = [checkbox.checked ? 1 : 0];
-        } else if (statImportance == 0) {
-          preferred[statName] = [checkbox.checked ? 1 : 0];
+        else {
+          attributeRequests.push({name: statName, value: checkbox.checked ? 1 : -1, importance: statImportance});
         }
       } else if (select) {
         const statName = select.name;
-        if (statImportance == 1) {
-          mandatory[statName] = [parseInt(select.value)];
-        } else if (statImportance == 0) {
-          preferred[statName] = [parseInt(select.value)];
-        }
-        
+        attributeRequests.push({name:select.name, value: select.value, importance: statImportance});
       }
     });
 
@@ -212,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
      //
 
-    if (Object.keys(mandatory).length + Object.keys(preferred).length + Object.keys(matchupRequests.chars).length === 0) {
+    if (attributeRequests.length + Object.keys(matchupRequests.chars).length === 0) {
         errorMessage.textContent =
             "Please set at least one preference!";
 
@@ -232,8 +197,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const attributes = data.attributes;
     const matchups = data.matchups;
 
-    const matchupResults = matchupMatch(matchupRequests.chars, matchups, matchupRequests.mutual);
-    const results = attributeMatch(mandatory, preferred, attributes, mii_sword, matchupResults);
+    // creates initial collection of character scores, all starting at 0 
+    // only goes up to little mac for now
+    let scores = []
+    for (let i = 1; i < 55; i++) {
+      scores.push({id: i, name: attributes[i - 1].name, attributeScore: 0, matchupScore: 0});
+    }
+
+    // runs both matching algorithms, then sorts results by descending score
+    matchupMatch(matchupRequests.chars, matchups, scores);
+    attributeMatch(attributeRequests, attributes, mii_sword, scores);
+    for (character of scores) {
+      character.totalScore = character.attributeScore + character.matchupScore;
+    }
+
+    scores.sort((a, b) => b.totalScore - a.totalScore);
+
+    console.log(scores);
+    werfhjbwied
 
     // stores characters to be displayed on results screen
     localStorage.setItem(
@@ -244,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // stash what was actually requested so results.html can highlught requested attributes/matchups
     localStorage.setItem(
         "requirements",
-        JSON.stringify({ mandatory, preferred, matchupRequests })
+        JSON.stringify({attributeRequests, matchupRequests})
     );
 
 
