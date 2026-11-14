@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Fighter Matches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Kanit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1 class="results-label">Your best suited fighters!</h1>
+  <p class="results-sub">
+    <br><span class="legend legend--perfect">Pink</span> means the character perfectly matches requirements. 
+    <br><span class="legend legend--match">Green</span> means the character meets most requirements. 
+    <br><span class="legend legend--mid">Yellow</span> means the character meets some requirements. 
+    <br><span class="legend legend--mismatch">Orange</span> means the character makes few requirements.
+    <br><span class="legend legend--bigMismatch">Red</span> means the character meets zero requirements.
+  </p>
+
+  <div class="results-container" id="resultsContainer"></div>
+
+  <div class="submit-section">
+    <a href="index.html" class="return-btn">Try Again?</a>
+  </div>
+
+  <script>
+    // every stat the form can request, how to label it, and how to turn
+    // its raw value into the same wording used on the form page
+    const STAT_DEFS = [
+      { key: "run_speed", label: "Run Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "initial_dash", label: "Initial Dash", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "air_speed", label: "Air Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "air_acceleration", label: "Air Acceleration", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      { key: "weight", label: "Weight", values: { 1: "Heavy", 0: "Average", "-1": "Light" } },
+      { key: "normal_fall", label: "Normal Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
+      { key: "fast_fall", label: "Fast Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
+      { key: "fast_escape", label: "Fast Escape Option", values: { "true": "Yes", "false": "No" } },
+      { key: "multiple_jumps", label: "Multiple Double Jumps", values: { "true": "Yes", "false": "No" } },
+      { key: "anti_projectile", label: "Anti Projectile Move", values: { "true": "Yes", "false": "No" } },
+      { key: "has_item", label: "Has Item", values: { "true": "Yes", "false": "No" } },
+      { key: "has_zair", label: "Has Zair", values: { "true": "Yes", "false": "No" } },
+      { key: "sig_change", label: "Form/Moveset Change", values: { "true": "Yes", "false": "No" } },
+      {
+        key: "effective_range",
+        label: "Effective Range",
+        values: { 5: "Long Range", 4: "Long-Mid Range", 3: "Mid Range", 2: "Close-Mid Range", 1: "Close Range", 6: "Adaptive" }
+      },
+    ];
+
+    const allChips = [];
+
+    function formatValue(def, rawValue) {
+      if (rawValue === undefined || rawValue === null) return "—";
+      return def.values[rawValue] ?? String(rawValue);
+    }
+
+    function buildStatList(fighter, attributeRequests, matchupRequests) {
+      const list = document.createElement('div');
+      list.className = 'stat-list';
+ 
+      const rowSizes = 2;
+
+      const rowGroup = document.createElement('div');
+      rowGroup.className = 'stat-row-group';
+
+      let maxAttributeScore = 0;
+
+      for (attribute of attributeRequests) {
+        maxAttributeScore += 1 * (1 + attribute.importance);
+      }
+
+      let attributeState = "neutral";
+
+      if (fighter.attributeScore == maxAttributeScore) {
+        attributeState = maxAttributeScore > 0 ? "perfect" : "neutral";
+      } 
+      else if (fighter.attributeScore / maxAttributeScore >= 0.75) {
+        attributeState = "match";
+      } else if (fighter.attributeScore / maxAttributeScore >= 0.5) {
+        attributeState = "mid"
+      } else if (fighter.attributeScore / maxAttributeScore > 0) {
+        attributeState = "mismatch"
+      } else {
+        attributeState = "bigMismatch"
+      }
+
+      const attributeChip = document.createElement('div');
+      attributeChip.className = `stat-chip stat-chip--${attributeState}`;
+
+      const attributeLabel = document.createElement('span');
+      attributeLabel.className = 'stat-chip-label';
+      attributeLabel.textContent = "Attributes";
+
+      const attributeValue = document.createElement('span');
+      attributeValue.className = 'stat-chip-value';
+      attributeValue.textContent = `${fighter.attributeScore} / ${maxAttributeScore}`;
+
+      attributeChip.appendChild(attributeLabel);
+      attributeChip.appendChild(attributeValue);
+      rowGroup.appendChild(attributeChip);
+
+      let maxMatchupScore = Object.keys(matchupRequests.chars).length * 2;
+      let matchupState = "neutral";
+
+      if (fighter.matchupScore == maxMatchupScore) {
+        matchupState = maxMatchupScore > 0 ? "perfect" : "neutral";
+      } 
+      else if (fighter.matchupScore / maxMatchupScore >= 0.75) {
+        matchupState = "match";
+      } else if (fighter.matchupScore / maxMatchupScore >= 0.5) {
+        matchupState = "mid"
+      } else if (fighter.matchupScore / maxMatchupScore > 0) {
+        matchupState = "mismatch"
+      } else {
+        matchupState = "bigMismatch"
+      }
+
+      const matchupChip = document.createElement('div');
+      matchupChip.className = `stat-chip stat-chip--${matchupState}`;
+
+      const matchupLabel = document.createElement('span');
+      matchupLabel.className = 'stat-chip-label';
+      matchupLabel.textContent = "Matchups";
+
+      const matchupValue = document.createElement('span');
+      matchupValue.className = 'stat-chip-value';
+      matchupValue.textContent = `${fighter.matchupScore} / ${maxMatchupScore}`;
+
+      matchupChip.appendChild(matchupLabel);
+      matchupChip.appendChild(matchupValue);
+      rowGroup.appendChild(matchupChip);
+
+      let totalState = "neutral";
+      if (fighter.totalScore == maxMatchupScore + maxAttributeScore) {
+        totalState = "perfect";
+      } 
+      else if (fighter.totalScore / (maxMatchupScore + maxAttributeScore) >= 0.75) {
+        totalState = "match";
+      } else if (fighter.totalScore / (maxMatchupScore + maxAttributeScore) >= 0.5) {
+        totalState = "mid"
+      } else if (fighter.totalScore / (maxMatchupScore + maxAttributeScore) > 0) {
+        totalState = "mismatch"
+      } else {
+        totalState = "bigMismatch"
+      }
+      const totalChip = document.createElement('div');
+      totalChip.className = `stat-chip stat-chip--${totalState}`;
+
+      const totalLabel = document.createElement('span');
+      totalLabel.className = 'stat-chip-label';
+      totalLabel.textContent = "Overall";
+
+
+      const totalValue = document.createElement('span');
+      totalValue.className = 'stat-chip-value';
+      totalValue.textContent = `${fighter.totalScore} / ${maxMatchupScore + maxAttributeScore}`;
+
+      totalChip.appendChild(totalLabel);
+      totalChip.appendChild(totalValue);
+      rowGroup.appendChild(totalChip);
+
+      list.appendChild(rowGroup);
+      
+      return list;
+
+    }
+
+    (async () => {
+      const results = JSON.parse(localStorage.getItem('results')) || [];
+      const { attributeRequests = [], matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
+      console.log(results);
+      console.log(attributeRequests);
+
+      const container = document.getElementById('resultsContainer');
+
+      const response = await fetch("/api/data");
+      const data = await response.json();
+      //const attributes = data.attributes;
+      const fighters = data.attributes;
+      const matchups = data.matchups;
+
+      // creates results card for each character selected
+      results.forEach(character => {
+        let name = character.name
+        const fighter = fighters.find(f => f.name === name);
+
+        const card = document.createElement('div');
+        card.className = 'fighter-card';
+
+        const portrait = document.createElement('div');
+        portrait.className = 'fighter-portrait';
+
+        const img = document.createElement('img');
+        const label = document.createElement('div');
+        label.className = 'fighter-name';
+
+        if (name == "Squirtle" || name == "Ivysaur" || name == "Charizard") {
+          img.src = `/fighterRenders/Pokemon Trainer.png`;
+          img.alt = "Pokemon Trainer";
+          label.textContent = "Pokemon Trainer";
+        } else {
+          img.src = `/fighterRenders/${name}.png`;
+          img.alt = name;
+          label.textContent = name;
+        }
+
+        portrait.appendChild(img);
+        portrait.appendChild(label);
+        card.appendChild(portrait);
+
+        const statList = buildStatList(character, attributeRequests, matchupRequests);
+        card.appendChild(statList);
+
+        container.appendChild(card);
+      });
+    })();
+  </script>
+</body>
+</html>

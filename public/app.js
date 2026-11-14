@@ -92,9 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
             character.attributeScore += 0.5 * (attribute.importance + 1);
           }
         }
-        if (!mii_sword && character.id == 57) {
-          scores.delete(character)
-        }
       }
   }
 
@@ -213,8 +210,21 @@ document.addEventListener("DOMContentLoaded", () => {
       character.totalScore = character.attributeScore + character.matchupScore;
     }
 
+    scores.filter(c => mii_sword || c.id !== 57);
     scores.sort((a, b) => b.totalScore - a.totalScore);
-    console.log(scores);
+    let i = 1;
+    let prevScore = -1.0;
+    let prevRank = 0;
+    for (character of scores) {
+      if (character.totalScore == prevScore) {
+        character.rank = prevRank;
+      } else {
+        character.rank = i;
+        prevScore = character.totalScore;
+        prevRank = character.rank;
+      }
+      i += 1;
+    }
     // stores characters to be displayed on results screen
     localStorage.setItem(
         "results",

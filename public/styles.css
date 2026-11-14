@@ -460,7 +460,7 @@ select:focus-visible {
   width: 100%;
   gap: 32px;
   margin: 40px auto 60px;
-  max-width: 1400px;
+  max-width: 1500px;
 }
  
 .empty-message {
@@ -485,9 +485,9 @@ select:focus-visible {
   background-color: var(--surface);
   border: 3px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 24px;
   gap: 16px;
-  width: 550px;
+  width: var(--card-width, 550px);
+  padding: var(--card-pad, 24px);
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -504,7 +504,7 @@ select:focus-visible {
 }
  
 .fighter-card img {
-  width: min(300px, 100%);
+  width: min(var(--portrait-size, 300px), 100%);
   aspect-ratio: 1 / 1;
   object-fit: contain;
   border-radius: var(--radius-md);
@@ -514,7 +514,7 @@ select:focus-visible {
  
 .fighter-name {
   font-family: var(--font-display);
-  font-size: clamp(3.0rem, 5vw, 2.5rem);
+  font-size: var(--name-size, 3rem);
   font-weight: 600;
   color: var(--text);
   text-align: center;
@@ -616,6 +616,118 @@ select:focus-visible {
  
 .stat-chip--mismatch .stat-chip-value {
   color: var(--danger-mild);
+}
+
+/* ===================================================================
+   Results page: score groups
+   =================================================================== */
+
+/* each group is one full-width section, so every group starts on its own line */
+.results-group {
+  width: 100%;
+}
+
+.results-group + .results-group {
+  margin-top: 40px;
+}
+
+/* title, blurb, then a colored rule (same idea as .seperator on the form page) */
+.results-group-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.results-group-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  color: var(--group-color);
+}
+
+/* the number bubble next to the title */
+.results-group-count {
+  padding: 0.1em 0.6em;
+  border: 2px solid var(--group-color);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.4em;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.results-group-blurb {
+  margin: 6px 0 0;
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  color: var(--text-muted);
+}
+
+.results-group-header::after {
+  content: "";
+  display: block;
+  height: 4px;
+  margin-top: 20px;
+  border-radius: 2px;
+  background: var(--group-color);
+}
+
+.results-group-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* cards pick up their group's color */
+.results-group .fighter-card {
+  border-color: var(--group-color);
+}
+
+/* One block per group. These are the numbers to edit:
+   --card-width     how wide the card is
+   --card-pad       space inside the card
+   --portrait-size  how big the character image is
+   --name-size      how big the name is */
+.results-group--perfect {
+  --group-color: var(--perfect);
+  --card-width: 550px;
+  --card-pad: 24px;
+  --portrait-size: 300px;
+  --name-size: 3rem;
+}
+
+.results-group--match {
+  --group-color: var(--success);
+  --card-width: 380px;
+  --card-pad: 20px;
+  --portrait-size: 250px;
+  --name-size: 2.0rem;
+}
+
+.results-group--mid {
+  --group-color: var(--accent);
+  --card-width: 280px;
+  --card-pad: 16px;
+  --portrait-size: 190px;
+  --name-size: 2rem;
+}
+
+.results-group--mismatch {
+  --group-color: var(--danger-mild);
+  --card-width: 180px;
+  --card-pad: 10px;
+  --portrait-size: 120px;
+  --name-size: 1.6rem;
+}
+
+.results-group--bigMismatch {
+  --group-color: var(--danger);
+  --card-width: 310px;
+  --card-pad: 10px;
+  --portrait-size: 120px;
+  --name-size: 1.3rem;
 }
 
  
