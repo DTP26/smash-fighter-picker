@@ -53,6 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
             character.matchupScore += 0.5;
           }
 
+          // edge case for the ditto
+          if (target == current) {
+            character.matchupScore = 0;
+          }
+
         }
     }
     
@@ -87,8 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
           } else if (attributes[character.id - 1][attribute.name] == attribute.value) {
             character.attributeScore += 1 * (attribute.importance + 1);
           }
-          // attribute is not close to matching
-          else if (Math.abs(attributes[character.id - 1][attribute.name] - attribute.value) == 1) {
+          // attribute is somewhat close to matching
+          else if (Math.abs(attributes[character.id - 1][attribute.name] - attribute.value) == 1 && !attribute.isToggle) {
+            console.log(attributes[character.id - 1][attribute.name]);
+            console.log(attribute.value);
             character.attributeScore += 0.5 * (attribute.importance + 1);
           }
         }
@@ -157,12 +164,12 @@ document.addEventListener("DOMContentLoaded", () => {
           mii_sword = checkbox.checked ? 1 : 0;
         }
         else if (statImportance != -1) {
-          attributeRequests.push({name: statName, value: checkbox.checked ? 1 : -1, importance: statImportance});
+          attributeRequests.push({name: statName, value: checkbox.checked ? 1 : 0, importance: statImportance, isToggle: true});
         }
       } else if (select) {
         const statName = select.name;
         if (statImportance != -1) {
-          attributeRequests.push({name:select.name, value: select.value, importance: statImportance});
+          attributeRequests.push({name:select.name, value: select.value, importance: statImportance, isToggle: false});
         }
       }
     });
