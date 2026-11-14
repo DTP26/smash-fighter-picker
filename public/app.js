@@ -37,20 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
           targetOpinion = matchups[target][current] * -1;
           currentOpinion = matchups[current][target];
 
-          // character score goes up by 0.5 per side that agrees on the requirement (mutual agreement gives full point)
+          // character score goes up by 1 per side that agrees on the requirement (mutual agreement gives full point)
 
           if (targetOpinion >= requirement) {
             character.matchupScore += 1;
           } 
-          else if (targetOpinion - requirement == -2) {
-            character.matchupScore -= 1;
+          else if (targetOpinion - requirement != -2) {
+            character.matchupScore += 0.5;
           }
 
           if (currentOpinion >= requirement) {
             character.matchupScore += 1
           }
-           else if (currentOpinion - requirement == -2) {
-            character.matchupScore -= 1;
+           else if (currentOpinion - requirement != -2) {
+            character.matchupScore += 0.5;
           }
 
         }
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       for (character of scores) {
         for (const attribute of requests) {
           // edge case for characters with highly variable effective range
-          if (attribute.name == "Effective Range" && attributes[character.id]["Effective Range"] == 6) {
+          if (attribute.name == "effective_range" && attributes[character.id - 1][attribute.name] == 6) {
             character.attributeScore += 1;
             
           // attribute is matched exactly
@@ -88,8 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
             character.attributeScore += 1 * (attribute.importance + 1);
           }
           // attribute is not close to matching
-          else if (Math.abs(attributes[character.id - 1][attribute.name] - attribute.value) > 1) {
-            character.attributeScore += -1 * (attribute.importance + 1);
+          else if (Math.abs(attributes[character.id - 1][attribute.name] - attribute.value) == 1) {
+            character.attributeScore += 0.5 * (attribute.importance + 1);
           }
         }
         if (!mii_sword && character.id == 57) {
