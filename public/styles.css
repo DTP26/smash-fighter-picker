@@ -10,8 +10,10 @@
 
   --accent: #fffb00;       
   --accent-soft: rgba(124, 108, 240, 0.16);
-  --danger: #ff4655;       
+  --danger: #ff4655;   
+  --danger-mild: #ff9d00;    
   --success: #3ddc84;      
+  --perfect: #ee00ff;
 
   --radius-lg: 16px;
   --radius-md: 10px;
@@ -410,16 +412,24 @@ select:focus-visible {
   font-weight: 700;
 }
  
+.legend--perfect {
+  color: var(--perfect);
+}
+
 .legend--match {
   color: var(--success);
 }
+
+.legend--mid {
+  color: var(--accent);
+}
  
 .legend--mismatch {
-  color: var(--danger);
+  color: var(--danger-mild);
 }
 
-.legend--smallMismatch {
-  color: var(--accent);
+.legend--bigMismatch {
+  color: var(--danger);
 }
  
 .return-btn {
@@ -575,6 +585,22 @@ select:focus-visible {
 .stat-chip--match .stat-chip-value {
   color: var(--success);
 }
+
+.stat-chip--perfect {
+  border-color: var(--perfect);
+}
+ 
+.stat-chip--perfect .stat-chip-value {
+  color: var(--perfect);
+}
+
+.stat-chip--mid {
+  border-color: var(--accent);
+}
+ 
+.stat-chip--mid .stat-chip-value {
+  color: var(--accent);
+}
  
 .stat-chip--bigMismatch {
   border-color: var(--danger);
@@ -584,12 +610,12 @@ select:focus-visible {
   color: var(--danger);
 }
 
-.stat-chip--smallMismatch {
-  border-color: var(--accent);
+.stat-chip--mismatch {
+  border-color: var(--danger-mild);
 }
  
-.stat-chip--smallMismatch .stat-chip-value {
-  color: var(--accent);
+.stat-chip--mismatch .stat-chip-value {
+  color: var(--danger-mild);
 }
 
  

@@ -12,11 +12,11 @@
 <body>
   <h1 class="results-label">Your best suited fighters!</h1>
   <p class="results-sub">
-    Attributes are colored based on what you requested:
-    <br><span class="legend legend--match">Green</span> means the character matches the requirement. 
-    <br><span class="legend legend--mismatch">Red</span> is for greatly missed numerical requirements <br>or unmatched "Yes or No" requirements. 
-    <br><span class="legend legend--smallMismatch">Yellow</span> is for stats that don't match, but aren't too far off. <br>
-    All stats left on 'Ignore' stay white.
+    <br><span class="legend legend--perfect">Pink</span> means the character perfectly matches requirements. 
+    <br><span class="legend legend--match">Green</span> means the character meets most requirements. 
+    <br><span class="legend legend--mid">Yellow</span> means the character meets some requirements. 
+    <br><span class="legend legend--mismatch">Orange</span> means the character makes few requirements.
+    <br><span class="legend legend--bigMismatch">Red</span> means the character meets barely zero requirements.
   </p>
 
   <div class="results-container" id="resultsContainer"></div>
@@ -55,153 +55,116 @@
       if (rawValue === undefined || rawValue === null) return "—";
       return def.values[rawValue] ?? String(rawValue);
     }
-
-    // mirrors the loose == comparison bestFighters() uses in app.js,
-    // including the "6 = variable, always counts" edge case
-    function matchState(def, fighter, mandatory, preferred) {
-      let requestedValue;
-      if (def.key in mandatory) {
-        requestedValue = mandatory[def.key][0];
-      } else if (def.key in preferred) {
-        requestedValue = preferred[def.key][0];
-      } else {
-        return "neutral";
-      }
-      const fighterValue = fighter[def.key];
-      if (fighterValue == requestedValue || fighterValue == 6) {
-        return "match";
-      } else if (Math.abs(fighterValue - requestedValue) > 1 || def.values.length > 2) {
-        return "bigMismatch"
-      } else {
-        return "smallMismatch"
-      }
-      const matches = fighterValue == requestedValue || fighterValue == 6;
-      return matches ? "match" : "mismatch";
+    function matchMatchup(fighter, matchupRequests) {
+      
     }
 
-    function matchStateMatchup(request, fighter, matchups) {
-      character = parseInt(request[0]);
-      requirement = request[1];
-      opponent = parseInt(fighter["id"]);
-
-      playerOpinion = matchups[character][opponent] * -1
-      opponentOpinion = matchups[opponent][character]
-
-      if (playerOpinion >= requirement && opponentOpinion >= requirement) {
-        return "match";
-      } 
-      // edge case for both sides thinking they win the matchup  
-      else if (Math.abs(playerOpinion) + opponentOpinion == 2) {
-        return "bigMismatch"
-      }
-      else {
-        return "smallMismatch"
-      }
-    }
-
-    // splits `total` items into rows of at most `maxPerRow`, keeping row
-    // sizes as even as possible and handing any remainder to the middle
-    // row(s) first so the block reads as a centered pyramid rather than
-    // a lopsided or orphaned last row (e.g. 13 items, max 5 -> 4, 5, 4)
-    function balancedRowSizes(total, maxPerRow) {
-      const rows = Math.max(1, Math.ceil(total / maxPerRow));
-      const base = Math.floor(total / rows);
-      let remainder = total - base * rows;
-      const sizes = new Array(rows).fill(base);
-      const mid = Math.floor(rows / 2);
-      let step = 0;
-      while (remainder > 0) {
-        const idx = step % 2 === 0
-          ? mid + Math.floor((step + 1) / 2)
-          : mid - Math.floor((step + 1) / 2);
-        sizes[idx] += 1;
-        remainder -= 1;
-        step += 1;
-      }
-      return sizes;
-    }
-
-
-    function buildStatList(fighter, mandatory, preferred, matchupRequests, fighters, matchups) {
+    function buildStatList(fighter, attributeRequests, matchupRequests) {
       const list = document.createElement('div');
       list.className = 'stat-list';
-
-      
  
-      const rowSizes = balancedRowSizes(allChips.length, 5);
-      let cursor = 0;
-      let statsDone = false;
- 
-      rowSizes.forEach(size => {
-        const rowGroup = document.createElement('div');
-        rowGroup.className = 'stat-row-group';
+      const rowSizes = 2;
 
-        allChips.slice(cursor, cursor + size).forEach(def => {
-          if ("key" in def) {
-            const state = matchState(def, fighter, mandatory, preferred);
+      const rowGroup = document.createElement('div');
+      rowGroup.className = 'stat-row-group';
 
-            const chip = document.createElement('div');
-            chip.className = `stat-chip stat-chip--${state}`;
+      let maxAttributeScore = 0;
 
-            const label = document.createElement('span');
-            label.className = 'stat-chip-label';
-            label.textContent = def.label;
-            statsDone = def.label == "Effective Range"
+      for (attribute of attributeRequests) {
+        maxAttributeScore += 1 * (1 + attribute.importance);
+      }
 
-            const value = document.createElement('span');
-            value.className = 'stat-chip-value';
-            value.textContent = formatValue(def, fighter[def.key]);
+      let attributeState = "neutral";
 
-            chip.appendChild(label);
-            chip.appendChild(value);
-            rowGroup.appendChild(chip);
-          } 
-          else {
-            const state = matchStateMatchup(def, fighter, matchups);
+      if (fighter.attributeScore == maxAttributeScore) {
+        attributeState = maxAttributeScore > 0 ? "perfect" : "neutral";
+      } 
+      else if (fighter.attributeScore / maxAttributeScore >= 0.75) {
+        attributeState = "match";
+      } else if (fighter.attributeScore / maxAttributeScore >= 0.5) {
+        attributeState = "mid"
+      } else if (fighter.attributeScore / maxAttributeScore > 0) {
+        attributeState = "mismatch"
+      } else {
+        attributeState = "bigMismatch"
+      }
 
-            character = parseInt(def[0]);
-            requirement = def[1];
-            opponent = parseInt(fighter["id"]);
+      const attributeChip = document.createElement('div');
+      attributeChip.className = `stat-chip stat-chip--${attributeState}`;
 
-            // opinion of character we are trying to beat, so them losing should be positive
-            // hence why we are multiplying by -1 to flip the value
-            playerOpinion = matchups[character][opponent] * -1;
-            const playerText = playerOpinion == 1 ? "Winning" : playerOpinion == 0 ? "Even" : "Losing";
+      const attributeLabel = document.createElement('span');
+      attributeLabel.className = 'stat-chip-label';
+      attributeLabel.textContent = "Attributes";
 
-            opponentOpinion = matchups[opponent][character];
-            const opponentText = opponentOpinion == 1 ? "Winning" : opponentOpinion == 0 ? "Even" : "Losing";
+      const attributeValue = document.createElement('span');
+      attributeValue.className = 'stat-chip-value';
+      attributeValue.textContent = `${fighter.attributeScore} / ${maxAttributeScore}`;
 
-            const chip = document.createElement('div');
-            chip.className = `stat-chip stat-chip--${state}`;
+      attributeChip.appendChild(attributeLabel);
+      attributeChip.appendChild(attributeValue);
+      rowGroup.appendChild(attributeChip);
 
-            const label = document.createElement('span');
-            label.className = 'stat-chip-value';
-            if (playerText == opponentText) {
-              label.textContent = playerText;
-            } else {
-              label.textContent = playerText + " / " + opponentText;
-            }
+      let maxMatchupScore = Object.keys(matchupRequests.chars).length * 2;
+      let matchupState = "neutral";
 
-            const img = document.createElement('img');
-            img.className = 'stat-chip-img';
-            if (fighters[def[0] - 1].name == "Squirtle" || fighters[def[0] - 1].name == "Ivysaur" || fighters[def[0] - 1].name == "Charizard") {
-              img.src = `/fighterIcons/Pokemon Trainer.png`;
-            } 
-            else {
-              img.src = `/fighterIcons/${fighters[def[0] - 1].name}.png`;
-            }
-            chip.append(label);
-            chip.append(img);
-            rowGroup.appendChild(chip);
-          }
-          
-        });
-        
- 
-        list.appendChild(rowGroup);
-        cursor += size;
-      });
- 
+      if (fighter.matchupScore == maxMatchupScore) {
+        matchupState = maxMatchupScore > 0 ? "perfect" : "neutral";
+      } 
+      else if (fighter.matchupScore / maxMatchupScore >= 0.75) {
+        matchupState = "match";
+      } else if (fighter.matchupScore / maxMatchupScore >= 0.5) {
+        matchupState = "mid"
+      } else if (fighter.matchupScore / maxMatchupScore > 0) {
+        matchupState = "mismatch"
+      } else {
+        matchupState = "bigMismatch"
+      }
+
+      const matchupChip = document.createElement('div');
+      matchupChip.className = `stat-chip stat-chip--${matchupState}`;
+
+      const matchupLabel = document.createElement('span');
+      matchupLabel.className = 'stat-chip-label';
+      matchupLabel.textContent = "Matchups";
+
+      const matchupValue = document.createElement('span');
+      matchupValue.className = 'stat-chip-value';
+      matchupValue.textContent = `${fighter.matchupScore} / ${maxMatchupScore}`;
+
+      matchupChip.appendChild(matchupLabel);
+      matchupChip.appendChild(matchupValue);
+      rowGroup.appendChild(matchupChip);
+
+      let totalState = "neutral";
+      if (fighter.totalScore == maxMatchupScore + maxAttributeScore) {
+        totalState = "perfect";
+      } 
+      else if (fighter.totalScore / (maxMatchupScore + maxAttributeScore) >= 0.75) {
+        totalState = "match";
+      } else if (fighter.totalScore / (maxMatchupScore + maxAttributeScore) >= 0.5) {
+        totalState = "mid"
+      } else if (fighter.totalScore / (maxMatchupScore + maxAttributeScore) > 0) {
+        totalState = "mismatch"
+      } else {
+        totalState = "bigMismatch"
+      }
+      const totalChip = document.createElement('div');
+      totalChip.className = `stat-chip stat-chip--${totalState}`;
+
+      const totalLabel = document.createElement('span');
+      totalLabel.className = 'stat-chip-label';
+      totalLabel.textContent = "Overall";
+
+
+      const totalValue = document.createElement('span');
+      totalValue.className = 'stat-chip-value';
+      totalValue.textContent = `${fighter.totalScore} / ${maxMatchupScore + maxAttributeScore}`;
+
+      totalChip.appendChild(totalLabel);
+      totalChip.appendChild(totalValue);
+      rowGroup.appendChild(totalChip);
+
+      list.appendChild(rowGroup);
       
       return list;
 
@@ -220,16 +183,6 @@
       //const attributes = data.attributes;
       const fighters = data.attributes;
       const matchups = data.matchups;
-
-      /*STAT_DEFS.forEach(stat => {
-        if ((stat.key in mandatory || stat.key in preferred)) {
-          allChips.push(stat);
-        }
-      });*/
-
-      /*for (const matchup of Object.entries(matchupRequests.chars)) {
-         allChips.push(matchup);
-      }   */
 
       // creates results card for each character selected
       results.forEach(character => {
@@ -259,6 +212,9 @@
         portrait.appendChild(img);
         portrait.appendChild(label);
         card.appendChild(portrait);
+
+        const statList = buildStatList(character, attributeRequests, matchupRequests);
+        card.appendChild(statList);
 
         container.appendChild(card);
       });

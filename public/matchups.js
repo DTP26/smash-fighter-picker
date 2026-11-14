@@ -203,7 +203,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // What app.js reads at submit time -
   window.getMatchupSelections = () => ({
     // copy, so callers can't mutate our state
-    chars: { ...selections },                       
-    mutual: mutualBox ? mutualBox.checked : false 
+    chars: { ...selections } 
   });
 });
