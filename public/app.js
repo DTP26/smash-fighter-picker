@@ -53,10 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
             character.matchupScore += 0.5;
           }
 
-          // edge case for the ditto
-          if (target == current) {
-            character.matchupScore = 0;
-          }
 
         }
     }
@@ -94,8 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           // attribute is somewhat close to matching
           else if (Math.abs(attributes[character.id - 1][attribute.name] - attribute.value) == 1 && !attribute.isToggle) {
-            console.log(attributes[character.id - 1][attribute.name]);
-            console.log(attribute.value);
             character.attributeScore += 0.5 * (attribute.importance + 1);
           }
         }
