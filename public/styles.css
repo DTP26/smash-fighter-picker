@@ -772,8 +772,7 @@ select:focus-visible {
   max-width: 1200px;
   margin: 0 auto;
   padding: 16px;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
+  background-color: var(--bg);
   border-radius: var(--radius-lg);
   align-items: center;
 }
