@@ -37,22 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
           targetOpinion = matchups[target][current] * -1;
           currentOpinion = matchups[current][target];
 
-          // character score goes up by 1 per side that agrees on the requirement (mutual agreement gives full point)
+          // character score goes up by 0.5 per side that agrees on the requirement (mutual agreement gives full point)
+          // 0.25 partial credit for when requirement is winning, mu is even
 
           if (targetOpinion >= requirement) {
             character.matchupScore += 0.5;
           } 
-          else if (targetOpinion - requirement != -2 && current != target) {
+          else if (targetOpinion - requirement != -2 && requirement != 0 && current != target) {
             character.matchupScore += 0.25;
           }
 
           if (currentOpinion >= requirement) {
             character.matchupScore += 0.5
           }
-           else if (currentOpinion - requirement != -2 && current != target) {
+          else if (currentOpinion - requirement != -2 && requirement != 0 && current != target) {
             character.matchupScore += 0.25;
           }
-
 
         }
     }

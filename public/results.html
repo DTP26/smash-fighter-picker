@@ -64,26 +64,28 @@
     // Score groups
     // ===================================================================
  
-    // The groups, best first. `state` is the color name used everywhere else
-    // (chips, legend, CSS), so it has to match the .results-group--<state>
-    // rules in styles.css. Edit the title/blurb text freely.
     const GROUPS = [
-      { state: "perfect",     title: "Perfect matches", blurb: "Meet every requirement you set" },
-      { state: "match",       title: "Strong matches",  blurb: "Meet most of your requirements" },
-      { state: "mid",         title: "Decent matches",  blurb: "Meet some of your requirements" },
-      { state: "mismatch",    title: "Weak matches",    blurb: "Meet few of your requirements" },
-      { state: "bigMismatch", title: "Poor matches",    blurb: "Meet none of your requirements" },
+      { state: "perfect",     title: "Supercalifragilisticexpialidocious", 
+      blurb: "Extremly close to what you asked for. Your trolling if you don't give them a shot." },
+      { state: "match",       title: "Very nice!",  
+      blurb: "While not perfect, they fit a large amount of what you asked for." },
+      { state: "mid",         title: "I mean, it's aight",  
+      blurb: "Aren't the best matches, but not the worst. May still be worth trying" },
+      { state: "mismatch",    title: "I dunno...",    
+      blurb: "They only match a small number of your requests. Likely aren't what you're looking for." },
+      { state: "bigMismatch", title: "[LOUD INCORRECT BUZZER]",    
+        blurb: "Basically the opposite of what you want. Stay away from these characters" },
     ];
  
     // Turns a score into a color state. Used by the stat chips AND by the
     // grouping below, so a character's group always matches its Overall chip.
     function scoreState(score, max) {
       if (max <= 0) return "neutral";        // nothing was requested in this category
-      if (score === max) return "perfect";
       const ratio = score / max;
-      if (ratio >= 0.75) return "match";
-      if (ratio >= 0.5) return "mid";
-      if (ratio >= 0.25) return "mismatch";
+      if (ratio >= 0.9) return "perfect";
+      else if (ratio >= 0.7) return "match";
+      else if (ratio >= 0.5) return "mid";
+      else if (ratio >= 0.25) return "mismatch";
       return "bigMismatch";
     }
  
@@ -249,7 +251,7 @@
       for (const attribute of attributeRequests) {
         maxAttributeScore += 1 * (1 + attribute.importance);
       }
-      const maxMatchupScore = Object.keys(matchupRequests.chars || {}).length * 1;
+      const maxMatchupScore = Object.keys(matchupRequests.chars || {}).length;
       const maxTotalScore = maxAttributeScore + maxMatchupScore;
  
       // sort every character into a group by overall score. results arrive
