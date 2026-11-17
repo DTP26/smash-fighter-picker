@@ -174,7 +174,7 @@
       const label = document.createElement('div');
       label.className = 'fighter-name';
  
-      if (name == "Squirtle" || name == "Ivysaur" || name == "Charizard") {
+      if (name == "Squirtle2" || name == "Ivysaur2" || name == "Charizard2") {
         img.src = `/fighterRenders/Pokemon Trainer.png`;
         img.alt = "Pokemon Trainer";
         label.textContent = numToRank(character.rank) + ": Pokemon Trainer";
@@ -249,7 +249,7 @@
       for (const attribute of attributeRequests) {
         maxAttributeScore += 1 * (1 + attribute.importance);
       }
-      const maxMatchupScore = Object.keys(matchupRequests.chars || {}).length * 2;
+      const maxMatchupScore = Object.keys(matchupRequests.chars || {}).length * 1;
       const maxTotalScore = maxAttributeScore + maxMatchupScore;
  
       // sort every character into a group by overall score. results arrive

@@ -40,17 +40,17 @@ document.addEventListener("DOMContentLoaded", () => {
           // character score goes up by 1 per side that agrees on the requirement (mutual agreement gives full point)
 
           if (targetOpinion >= requirement) {
-            character.matchupScore += 1;
-          } 
-          else if (targetOpinion - requirement != -2) {
             character.matchupScore += 0.5;
+          } 
+          else if (targetOpinion - requirement != -2 && current != target) {
+            character.matchupScore += 0.25;
           }
 
           if (currentOpinion >= requirement) {
-            character.matchupScore += 1
+            character.matchupScore += 0.5
           }
-           else if (currentOpinion - requirement != -2) {
-            character.matchupScore += 0.5;
+           else if (currentOpinion - requirement != -2 && current != target) {
+            character.matchupScore += 0.25;
           }
 
 
@@ -198,9 +198,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const matchups = data.matchups;
 
     // creates initial collection of character scores, all starting at 0 
-    // only goes up to little mac for now
+    // only goes up to pacman for now
     let scores = []
-    for (let i = 1; i < 55; i++) {
+    for (let i = 1; i < 61; i++) {
       scores.push({id: i, name: attributes[i - 1].name, attributeScore: 0, matchupScore: 0});
     }
 
