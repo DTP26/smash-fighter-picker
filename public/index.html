@@ -25,22 +25,24 @@
       </p>
  
       <!-- matchups.js fills this with one <button class="matchup-tile"> per character -->
-      <div class="matchup-grid" id="matchupGrid"></div>
+      <div class="matchup-wrapper">
+        <div class="matchup-grid" id="matchupGrid"></div>
  
-      <div class="matchup-controls">
-        <!-- which value a click paints: 1 = winning (green), 0 = at least even (yellow) -->
-        <div class="radio-group matchup-modes" role="radiogroup" aria-label="Matchup mode">
-          <label class="segment segment--win">
-            <input type="radio" name="matchup_mode" value="1" checked>
-            <span>Winning</span>
-          </label>
-          <label class="segment segment--even">
-            <input type="radio" name="matchup_mode" value="0">
-            <span>At least even</span>
-          </label>
+        <div class="matchup-controls">
+          <!-- which value a click paints: 1 = winning (green), 0 = at least even (yellow) -->
+          <div class="radio-group matchup-modes" role="radiogroup" aria-label="Matchup mode">
+            <label class="segment segment--win">
+              <input type="radio" name="matchup_mode" value="1" checked>
+              <span>Winning</span>
+            </label>
+            <label class="segment segment--even">
+              <input type="radio" name="matchup_mode" value="0">
+              <span>At least even</span>
+            </label>
+          </div>
+      
+          <button type="button" class="matchup-clear" id="matchupClear">Clear all</button>
         </div>
-    
-        <button type="button" class="matchup-clear" id="matchupClear">Clear all</button>
       </div>
     </section>
 
@@ -519,7 +521,7 @@
     </section>
     <div class="seperator" aria-hidden="true"></div>
     <section class="stat-section" aria-labelledby="swordfighter-heading">
-      <h2 class="section-label" id="swordfighter-heading">IMPORTANT QUESTION</h2>
+      <h2 class="section-label--swordfighter" id="swordfighter-heading">IMPORTANT QUESTION</h2>
         <div class="form-group form-group--special">
           <label class="stat-label--mii" for="miiSword">Do you consent to Mii Swordfighter?</label>
           <p class="stat-desc"></p>

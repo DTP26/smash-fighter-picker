@@ -50,7 +50,7 @@ body {
 
 .seperator {
   width: min(1300px, 100%);
-  height: 4px;
+  height: 10px;
   margin: 60px auto 60px;
   border-radius: 2px;
   background: var(--accent);
@@ -75,6 +75,7 @@ form {
   color: var(--text-muted);
   margin: 6px auto 28px;
   max-width: 60ch;
+  text-align: center;
 }
 
 
@@ -133,14 +134,14 @@ form {
 }
 
 .stat-desc {
-  font-size: 1rem;
+  font-size: 1.25rem;
   line-height: 1.5;
   color: var(--text-muted);
   margin: 0 0 6px;
 }
 
 .playstyle-disclaimer {
-  font-size: 1.0 rem;
+  font-size: 1.5rem;
   line-height: 1.5;
   color: var(--danger);
   margin: 0 0 12px;
@@ -325,6 +326,14 @@ select:focus-visible {
 .mii-render {
   border-radius: var(--radius-md);
   display: block;
+}
+
+.section-label--swordfighter {
+  font-size: 4rem;
+  text-decoration: underline;
+  color: var(--danger);
+  text-align: center;
+  margin: 0 auto 12px;
 }
 
 /* ===================================================================
@@ -788,6 +797,14 @@ select:focus-visible {
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
+.matchup-wrapper:has(input[name="matchup_mode"][value="1"]:checked) {
+  --hover-color:var(--success);
+}
+
+.matchup-wrapper:has(input[name="matchup_mode"][value="0"]:checked) {
+  --hover-color:var(--accent);
+}
+
 .matchup-tile img {
   width: 100%;
   height: 100%;
@@ -797,8 +814,9 @@ select:focus-visible {
 
 
 .matchup-tile:hover {
-  border-color: var(--text-muted);
-  transform: translateY(-2px);
+  border-color: var(--hover-color);
+  border-width: 3px;
+  transform: scale(1.05);
 }
 
 
@@ -809,18 +827,15 @@ select:focus-visible {
 }
 
 
-
 /* ...then the two selected states, driven by the data-state attribute
    that matchups.js sets on the button */
 
 .matchup-tile[data-state="win"] {
   background-color: var(--success);
-  border-color: var(--success);
 }
 
 .matchup-tile[data-state="even"] {
   background-color: var(--accent);
-  border-color: var(--accent);
 }
 
 /* shown when an icon file can't be found (name text replaces the image) */
