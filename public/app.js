@@ -129,6 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
 
   const form = document.getElementById('preferencesForm');
+  const errorMessage = document.getElementById('form-error');
+  errorMessage.textContent="Please set at least one preference";
+  let numOfErrors = 0;
 
   // runs when the user attempts to submit their requests
   form.addEventListener('submit', async (e) => {
@@ -173,20 +176,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let matchupRequests = window.getMatchupSelections();
 
     // User must mark at least one matchup/attribute before submitting 
-    const errorMessage = document.getElementById('form-error');
-
-     //
+    let errorTimer;
+    
 
     if (attributeRequests.length + Object.keys(matchupRequests.chars).length === 0) {
-        errorMessage.textContent =
-            "Please set at least one preference!";
+      numOfErrors += 1;
+      if (numOfErrors < 7) {
+        errorMessage.textContent += "!";
+      }
+        // 1. Remove the class and force a browser reflow to restart CSS animations
+        errorMessage.classList.remove('visible');
+        void errorMessage.offsetWidth; 
 
+        // 2. Re-add the class to show the message
         errorMessage.classList.add('visible');
+
 
         return;
     }
 
     // Hide error if the user previously triggered it
+    clearTimeout(errorTimer);
     errorMessage.classList.remove('visible');
 
     // retrieve table data 
