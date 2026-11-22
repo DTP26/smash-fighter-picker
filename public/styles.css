@@ -348,7 +348,7 @@ select:focus-visible {
 .submit-btn {
   font-family: var(--font-display);
   background-color: var(--danger);
-  border: none;
+  
   color: #ffffff;
   padding: 18px 60px;
   font-size: 1.4rem;
@@ -357,10 +357,14 @@ select:focus-visible {
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.15s ease;
+  position: fixed;
+  bottom: 10vh;
+  right: 44vw;
+  width: 300px;
 }
 
 .submit-btn:hover {
-  background-color: #ff2f40;
+  border: var(--text);
   transform: translateY(-2px);
 }
 
@@ -733,9 +737,9 @@ select:focus-visible {
 
 .results-group--bigMismatch {
   --group-color: var(--danger);
-  --card-width: 310px;
-  --card-pad: 10px;
-  --portrait-size: 120px;
+  --card-width: 110px;
+  --card-pad: 8px;
+  --portrait-size: 90px;
   --name-size: 1.3rem;
 }
 

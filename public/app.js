@@ -198,9 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const matchups = data.matchups;
 
     // creates initial collection of character scores, all starting at 0 
-    // only goes up to pacman for now
     let scores = []
-    for (let i = 1; i < 61; i++) {
+    for (let i = 1; i < 90; i++) {
       scores.push({id: i, name: attributes[i - 1].name, attributeScore: 0, matchupScore: 0});
     }
 
