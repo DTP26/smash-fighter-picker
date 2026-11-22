@@ -49,7 +49,7 @@ body {
 /* Section seperator */
 
 .seperator {
-  width: min(1300px, 100%);
+  width: min(1600px, 100%);
   height: 10px;
   margin: 60px auto 60px;
   border-radius: 2px;
@@ -62,7 +62,7 @@ body {
    =================================================================== */
 
 form {
-  max-width: 1360px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 32px 0;
 }
@@ -106,7 +106,7 @@ form {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 400px);
+  grid-template-columns: repeat(auto-fit, minmax(410px, 1fr));
   gap: 20px;
   justify-content:center;
   min-width: 500px;
@@ -136,7 +136,7 @@ form {
 }
 
 .stat-desc {
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--text-muted);
   margin: 0 0 6px;
@@ -185,6 +185,7 @@ select {
   border-radius: var(--radius-md);
   padding: 12px 40px 12px 14px;
   cursor: pointer;
+  object-fit: contain;
 }
 
 select:focus-visible {
@@ -313,6 +314,7 @@ select:focus-visible {
    border: none;
    border-radius: var(--radius-lg);
    max-width: 100%;
+   padding-bottom: 150px;
 }
 
 .card-body--special {
@@ -349,7 +351,7 @@ select:focus-visible {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
-  width: 1200px;
+  width: 1400px;
   margin: 0 auto;
   padding: 16px;
   background-color: var(--bg);
@@ -365,6 +367,7 @@ select:focus-visible {
   justify-content: center;
   aspect-ratio: 1 / 1;
   padding: 6px;
+  width: 95px;
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--surface-2);
