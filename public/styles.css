@@ -388,8 +388,8 @@ select:focus-visible {
 .matchup-tile img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  pointer-events: none; /* clicks always land on the button, never the img */
+  object-fit: cover;
+  pointer-events: none;
 }
 
 
@@ -398,8 +398,6 @@ select:focus-visible {
   border-width: 3px;
   transform: scale(1.05);
 }
-
-
 
 .matchup-tile:focus-visible {
   outline: 2px solid var(--accent);
@@ -641,6 +639,7 @@ select:focus-visible {
   grid-template-columns: 45% 1fr;
   gap: 20px;
   justify-content:center;
+  box-sizing: border-box;
 }
  
 .results-container {
@@ -866,19 +865,28 @@ select:focus-visible {
   --group-color: var(--danger);
 }
 
-.matchup-grid-results {
-  zoom: 0.5;
+.matchup-grid--results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 4px;
+  background-color: var(--bg);
+  border-radius: var(--radius-lg);
+  align-items: center;
 }
 
 /* One character = one button. Neutral look first... */
 
-/*.matchup-tile-results {
+.matchup-tile--results {
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 1 / 1;
-  padding: 6px;
-  width: 80px;
+  padding: 4px;
+  width: 55px;
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--surface-2);
@@ -886,7 +894,14 @@ select:focus-visible {
   font: inherit;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-} */
+}
+
+.matchup-tile--results img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
 
 /* ===================================================================
    Responsive

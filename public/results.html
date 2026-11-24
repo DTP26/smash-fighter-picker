@@ -17,6 +17,10 @@
  
   <div class="results-grid">
     <div class="results-container" id="resultsContainer"></div>
+    <div class="stats-container">
+      <div class="matchup-grid--results" id="matchupGrid"></div>
+    </div>
+    
   </div>
   
  
@@ -273,6 +277,54 @@
       section.appendChild(cards);
       return section;
     }
+
+    function buildTile(fighter) {
+
+    // each character has their icon placed on their own button
+    const tile = document.createElement("div");
+    tile.type = "button"; 
+    tile.className = "matchup-tile--results";
+
+    // edge case for pokemon trainer (combines squirtle, ivysaur, and charizard)
+    if (fighter.id > 37 && fighter.id < 41) {
+        if (fighter.id == 38) {
+            tile.dataset.characterId = fighter.id;
+            tile.title = "Pokemon Trainer";
+        } else {
+            return -1;
+        }
+    // edge case for pyra / mythra 
+    } else if (fighter.id == 86 || fighter.id == 87) {
+        if (fighter.id == 86) {
+            tile.dataset.characterId = fighter.id;
+            tile.title = "Pyra & Mythra";
+        } else {
+            return -1;
+        }
+    } else {
+        tile.dataset.characterId = fighter.id;
+        tile.title = fighter.name;
+    }
+
+    // sets title to display upon hover, initial status to unselected, and loads character icon
+    tile.setAttribute("aria-label", tile.title);
+    tile.setAttribute("aria-pressed", "false");
+
+    const img = document.createElement("img");
+    img.src = `/fighterIcons/${tile.title}.png`;
+    img.alt = ""; // the button's aria-label already names it
+    img.loading = "lazy";
+
+    // If a file name doesn't match, show the name as text so it's obvious
+    // which icon is missing instead of leaving a blank tile.
+    img.addEventListener("error", () => {
+    tile.classList.add("matchup-tile--noicon");
+    tile.textContent = tile.title;
+    });
+
+    tile.appendChild(img);
+    return tile;
+  }
  
     (async () => {
       const results = JSON.parse(localStorage.getItem('results')) || [];
@@ -281,6 +333,7 @@
       console.log(attributeRequests);
  
       const container = document.getElementById('resultsContainer');
+      const grid = document.getElementById('matchupGrid');
  
       const response = await fetch("/api/data");
       const data = await response.json();
@@ -312,6 +365,28 @@
           container.appendChild(buildGroup(group, members, maxAttributeScore, maxMatchupScore));
         }
       });
+      try {
+        // separates miis from id order to add them to the end (mimics select screen)
+        const miis = new Set();
+
+        fighters.forEach(fighter => {
+            tile = buildTile(fighter);
+            if (tile != -1) {
+                if (tile.title.includes("Mii")) {
+                    miis.add(tile);
+                } else {
+                    grid.appendChild(tile);
+                }
+            }     
+        });
+
+        miis.forEach(mii => grid.appendChild(mii));
+            
+      } catch (err) {
+        console.error(err);
+        grid.textContent = "Couldn't load the character list.";
+        return;
+      }
     })();
   </script>
 </body>
