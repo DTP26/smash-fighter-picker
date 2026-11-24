@@ -427,8 +427,6 @@ select:focus-visible {
   color: #101014;
 }
 
-
-
 /* Controls under the grid: mode toggle, agreement switch, clear button */
 
 .matchup-controls {
@@ -476,8 +474,6 @@ select:focus-visible {
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
-
-
 
 .matchup-clear:hover {
   color: var(--text);
@@ -580,7 +576,7 @@ select:focus-visible {
   font-size: clamp(2.5rem, 6vw, 4.25rem);
   text-align: center;
   color: var(--text);
-  margin: 32px 0 8px;
+  margin: 8px 0 8px;
 }
  
 .results-sub {
@@ -639,16 +635,25 @@ select:focus-visible {
 .return-btn:hover {
   background-color: var(--accent);
 }
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 45% 1fr;
+  gap: 20px;
+  justify-content:center;
+}
  
 .results-container {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  margin: 40px auto 60px;
-  max-width: 1500px;
+  margin: 0 auto;
+  overflow-y: scroll;
+  height: 80vh;
 }
  
 .fighter-card {
+  width: 450px; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -657,42 +662,36 @@ select:focus-visible {
   border: 3px solid var(--border);
   border-radius: var(--radius-lg);
   gap: 16px;
-  width: 550px;
   padding: 5px 5px 10px;
-  max-width: 100%;
-  box-sizing: border-box;
+  box-sizing: content-box;
   scroll-snap-align: center;
+  zoom: 0.5;
 }
- 
-.fighter-portrait {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  width: 100%;
+
+.fighter-card:hover {
+  transform: scale(1);
+  border-color: var(--accent);
 }
  
 .fighter-card img {
-  width: min(350px, 100%);
+  width: min(250px, 100%);
   aspect-ratio: 1 / 1;
   object-fit: contain;
   border-radius: var(--radius-md);
   transition: transform 0.3s ease;
+  padding: 10px;
 }
 
  
 .fighter-name {
   font-family: var(--font-display);
-  font-size: 3rem;
+  font-size: clamp(14px, 2vw, 32px);
   font-weight: 600;
+  white-space: nowrap;
   color: var(--text);
   text-align: center;
-  word-break: break-word;
 }
  
-.fighter-details {
-  width: 100%;
-}
  
 .stat-list {
   display: flex;
@@ -740,7 +739,7 @@ select:focus-visible {
 }
  
 .stat-chip-value {
-  font-size: 1.2rem;
+  font-size: 1.2em;
   font-weight: 700;
   color: var(--text);
 }
@@ -806,7 +805,7 @@ select:focus-visible {
   gap: 14px;
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-size: clamp(1rem, 2vw, 3.25rem);
   color: var(--group-color);
 }
 
@@ -822,7 +821,7 @@ select:focus-visible {
 
 .results-group-blurb {
   margin: 6px 0 0;
-  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-size: clamp(1rem, 1vw, 1.3rem);
   color: var(--text-muted);
 }
 
@@ -853,23 +852,41 @@ select:focus-visible {
 
 .results-group--match {
   --group-color: var(--success);
-  zoom: 0.8;
 }
 
 .results-group--mid {
   --group-color: var(--accent);
-  zoom: 0.7;
 }
 
 .results-group--mismatch {
   --group-color: var(--danger-mild);
-  zoom: 0.6;
 }
 
 .results-group--bigMismatch {
   --group-color: var(--danger);
+}
+
+.matchup-grid-results {
   zoom: 0.5;
 }
+
+/* One character = one button. Neutral look first... */
+
+/*.matchup-tile-results {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  padding: 6px;
+  width: 80px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+} */
 
 /* ===================================================================
    Responsive

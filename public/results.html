@@ -15,7 +15,10 @@
   <p class="results-sub">
   </p>
  
-  <div class="results-container" id="resultsContainer"></div>
+  <div class="results-grid">
+    <div class="results-container" id="resultsContainer"></div>
+  </div>
+  
  
   <div class="submit-section">
     <a href="index.html" class="return-btn">Try Again?</a>
@@ -50,9 +53,6 @@
     function formatValue(def, rawValue) {
       if (rawValue === undefined || rawValue === null) return "—";
       return def.values[rawValue] ?? String(rawValue);
-    }
-    function matchMatchup(fighter, matchupRequests) {
-      
     }
  
     // ===================================================================
@@ -108,59 +108,65 @@
  
       const rowGroup = document.createElement('div');
       rowGroup.className = 'stat-row-group';
- 
-      rowGroup.appendChild(buildChip(
-        "Matchups",
-        `${fighter.matchupScore} / ${maxMatchupScore}`,
-        scoreState(fighter.matchupScore, maxMatchupScore)
-      ));
 
-      if (fighter.name == "Pokemon Trainer") {
+      if (maxMatchupScore > 0) {
         rowGroup.appendChild(buildChip(
-          "Squirtle Attributes",
-          `${fighter.squirtleAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.squirtleAttributes, maxAttributeScore)
-        ));
-        rowGroup.appendChild(buildChip(
-          "Ivysaur Attributes",
-          `${fighter.ivysaurAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.ivysaurAttributes, maxAttributeScore)
-        ));
-        rowGroup.appendChild(buildChip(
-          "Charizard Attributes",
-          `${fighter.charizardAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.charizardAttributes, maxAttributeScore)
-        ));
-        rowGroup.appendChild(buildChip(
-          "Overall Attributes",
-          `${fighter.averageAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.averageAttributes, maxAttributeScore)
-        ));
-      } else if (fighter.name == "Pyra & Mythra") {
-        rowGroup.appendChild(buildChip(
-          "Pyra Attributes",
-          `${fighter.pyraAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.pyraAttributes, maxAttributeScore)
-        ));
-        rowGroup.appendChild(buildChip(
-          "Mythra Attributes",
-          `${fighter.mythraAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.mythraAttributes, maxAttributeScore)
-        ));
-        rowGroup.appendChild(buildChip(
-          "Overall Attributes",
-          `${fighter.averageAttributes} / ${maxAttributeScore}`,
-          scoreState(fighter.averageAttributes, maxAttributeScore)
-        ));
-      } else {
-      rowGroup.appendChild(buildChip(
-        "Attributes",
-        `${fighter.attributeScore} / ${maxAttributeScore}`,
-        scoreState(fighter.attributeScore, maxAttributeScore)
+          "Matchups",
+          `${fighter.matchupScore} / ${maxMatchupScore}`,
+          scoreState(fighter.matchupScore, maxMatchupScore)
         ));
       }
+
+      if (maxAttributeScore > 0) {
+        if (fighter.name == "Pokemon Trainer") {
+          rowGroup.appendChild(buildChip(
+            "Squirtle Attributes",
+            `${fighter.squirtleAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.squirtleAttributes, maxAttributeScore)
+          ));
+          rowGroup.appendChild(buildChip(
+            "Ivysaur Attributes",
+            `${fighter.ivysaurAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.ivysaurAttributes, maxAttributeScore)
+          ));
+          rowGroup.appendChild(buildChip(
+            "Charizard Attributes",
+            `${fighter.charizardAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.charizardAttributes, maxAttributeScore)
+          ));
+          rowGroup.appendChild(buildChip(
+            "Overall Attributes",
+            `${fighter.averageAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.averageAttributes, maxAttributeScore)
+          ));
+        } else if (fighter.name == "Pyra & Mythra") {
+          rowGroup.appendChild(buildChip(
+            "Pyra Attributes",
+            `${fighter.pyraAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.pyraAttributes, maxAttributeScore)
+          ));
+          rowGroup.appendChild(buildChip(
+            "Mythra Attributes",
+            `${fighter.mythraAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.mythraAttributes, maxAttributeScore)
+          ));
+          rowGroup.appendChild(buildChip(
+            "Overall Attributes",
+            `${fighter.averageAttributes} / ${maxAttributeScore}`,
+            scoreState(fighter.averageAttributes, maxAttributeScore)
+          ));
+        } else {
+          rowGroup.appendChild(buildChip(
+            "Attributes",
+            `${fighter.attributeScore} / ${maxAttributeScore}`,
+            scoreState(fighter.attributeScore, maxAttributeScore)
+          ));
+        }
+      }
+      
+      
       rowGroup.appendChild(buildChip(
-        "Total Score",
+        "Overall Score",
         `${fighter.totalScore} / ${maxTotalScore}`,
         scoreState(fighter.totalScore, maxTotalScore)
       ));
@@ -173,9 +179,15 @@
 
     // converst number to rank (1 -> 1st, etc.) Assumes number between 1-89
     function numToRank(number) {
+
+      
       let firstDigit = number % 10;
       const secondDigit = (number - firstDigit) / 10;
       let rank = "";
+
+      if (number == 11 || number == 12 || number == 13) {
+        return "" + secondDigit + firstDigit + "th";
+      }
 
       switch (firstDigit) {
         case 1: 
