@@ -137,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-
     // submits results of the attribute forms into mandatory and preferred 
     // based on how the user marked their preferences
     
@@ -216,11 +215,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // runs both matching algorithms, then sorts results by descending score
     matchupMatch(matchupRequests.chars, matchups, scores);
     attributeMatch(attributeRequests, attributes, mii_sword, scores);
+
+    // need to combine pokemon trainer pokemon and pyra & mythra 
+    scores[37].name = "Pokemon Trainer";
+    scores[37].squirtleAttributes = scores[37].attributeScore;
+    scores[37].ivysaurAttributes = scores[38].attributeScore;
+    scores[37].charizardAttributes = scores[39].attributeScore;
+    scores[37].averageAttributes = parseFloat(((scores[37].squirtleAttributes 
+      + scores[37].ivysaurAttributes + scores[37].charizardAttributes) / 3).toFixed(2));
+    scores[37].totalScore = scores[37].averageAttributes + scores[37].matchupScore;
+
+    scores[85].name = "Pyra & Mythra";
+    scores[85].pyraAttributes = scores[85].attributeScore;
+    scores[85].mythraAttributes = scores[86].attributeScore;
+    scores[85].averageAttributes = parseFloat(((scores[85].pyraAttributes + scores[85].mythraAttributes) / 2).toFixed(2));
+    scores[85].totalScore = scores[85].averageAttributes + scores[85].matchupScore;
+
+    scores = scores.filter(c => c.id !== 39 && c.id !== 40 && c.id !== 87);
+    scores = scores.filter(c => mii_sword || c.id !== 57);
+
     for (character of scores) {
-      character.totalScore = character.attributeScore + character.matchupScore;
+      if (character.name != "Pokemon Trainer" && character.name != "Pyra & Mythra") {
+        character.totalScore = character.attributeScore + character.matchupScore;
+      }
     }
 
-    scores.filter(c => mii_sword || c.id !== 57);
     scores.sort((a, b) => b.totalScore - a.totalScore);
     let i = 1;
     let prevScore = -1.0;

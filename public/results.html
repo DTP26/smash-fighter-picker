@@ -61,11 +61,11 @@
  
     const GROUPS = [
       { state: "perfect",     title: "Supercalifragilisticexpialidocious!!!!", 
-      blurb: "Extremly close to what you asked for. You're trolling if you don't play them." },
+      blurb: "Essentially perfect unless you lied in the survey for some reason" },
       { state: "match",       title: "Very nice!",  
-      blurb: "While not perfect, they fit a large amount of what you asked for." },
+      blurb: "Strong matches outside of a couple areas. Certainly worth trying." },
       { state: "mid",         title: "I mean, it's aight",  
-      blurb: "Aren't the best matches, but not the worst. May still be worth trying" },
+      blurb: "They missed a noticeable number of your requests, but may still be worth trying" },
       { state: "mismatch",    title: "I dunno...",    
       blurb: "They only match a small number of your requests. Likely aren't what you're looking for." },
       { state: "bigMismatch", title: "[LOUD INCORRECT BUZZER]",    
@@ -110,17 +110,57 @@
       rowGroup.className = 'stat-row-group';
  
       rowGroup.appendChild(buildChip(
-        "Attributes",
-        `${fighter.attributeScore} / ${maxAttributeScore}`,
-        scoreState(fighter.attributeScore, maxAttributeScore)
-      ));
-      rowGroup.appendChild(buildChip(
         "Matchups",
         `${fighter.matchupScore} / ${maxMatchupScore}`,
         scoreState(fighter.matchupScore, maxMatchupScore)
       ));
+
+      if (fighter.name == "Pokemon Trainer") {
+        rowGroup.appendChild(buildChip(
+          "Squirtle Attributes",
+          `${fighter.squirtleAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.squirtleAttributes, maxAttributeScore)
+        ));
+        rowGroup.appendChild(buildChip(
+          "Ivysaur Attributes",
+          `${fighter.ivysaurAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.ivysaurAttributes, maxAttributeScore)
+        ));
+        rowGroup.appendChild(buildChip(
+          "Charizard Attributes",
+          `${fighter.charizardAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.charizardAttributes, maxAttributeScore)
+        ));
+        rowGroup.appendChild(buildChip(
+          "Overall Attributes",
+          `${fighter.averageAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.averageAttributes, maxAttributeScore)
+        ));
+      } else if (fighter.name == "Pyra & Mythra") {
+        rowGroup.appendChild(buildChip(
+          "Pyra Attributes",
+          `${fighter.pyraAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.pyraAttributes, maxAttributeScore)
+        ));
+        rowGroup.appendChild(buildChip(
+          "Mythra Attributes",
+          `${fighter.mythraAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.mythraAttributes, maxAttributeScore)
+        ));
+        rowGroup.appendChild(buildChip(
+          "Overall Attributes",
+          `${fighter.averageAttributes} / ${maxAttributeScore}`,
+          scoreState(fighter.averageAttributes, maxAttributeScore)
+        ));
+      } else {
       rowGroup.appendChild(buildChip(
-        "Overall",
+        "Attributes",
+        `${fighter.attributeScore} / ${maxAttributeScore}`,
+        scoreState(fighter.attributeScore, maxAttributeScore)
+        ));
+      }
+      rowGroup.appendChild(buildChip(
+        "Total Score",
         `${fighter.totalScore} / ${maxTotalScore}`,
         scoreState(fighter.totalScore, maxTotalScore)
       ));
@@ -171,15 +211,10 @@
       const label = document.createElement('div');
       label.className = 'fighter-name';
  
-      if (name == "Squirtle2" || name == "Ivysaur2" || name == "Charizard2") {
-        img.src = `/fighterRenders/Pokemon Trainer.png`;
-        img.alt = "Pokemon Trainer";
-        label.textContent = numToRank(character.rank) + ": Pokemon Trainer";
-      } else {
-        img.src = `/fighterRenders/${name}.png`;
-        img.alt = name;
-        label.textContent = numToRank(character.rank) + ": " + character.name;
-      }
+      
+      img.src = `/fighterRenders/${name}.png`;
+      img.alt = name;
+      label.textContent = numToRank(character.rank) + ": " + character.name;
  
       portrait.appendChild(img);
       portrait.appendChild(label);
@@ -203,10 +238,10 @@
       title.id = `group-${group.state}`;
       title.textContent = group.title;
  
-      const count = document.createElement('span');
+      /*const count = document.createElement('span');
       count.className = 'results-group-count';
       count.textContent = members.length;
-      title.appendChild(count);
+      title.appendChild(count);*/
  
       const blurb = document.createElement('p');
       blurb.className = 'results-group-blurb';
