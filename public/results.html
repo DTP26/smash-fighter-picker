@@ -17,8 +17,9 @@
  
   <div class="results-grid">
     <div class="results-container" id="resultsContainer"></div>
-    <div class="stats-container">
+    <div class="compare-container">
       <div class="matchup-grid--results" id="matchupGrid"></div>
+      <div class="stat-list--results" id="statResults"></div>
     </div>
     
   </div>
@@ -31,28 +32,26 @@
   <script>
     // every stat the form can request, how to label it, and how to turn
     // its raw value into the same wording used on the form page
-    const STAT_DEFS = [
-      { key: "run_speed", label: "Run Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
-      { key: "initial_dash", label: "Initial Dash", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
-      { key: "air_speed", label: "Air Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
-      { key: "air_acceleration", label: "Air Acceleration", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
-      { key: "weight", label: "Weight", values: { 1: "Heavy", 0: "Average", "-1": "Light" } },
-      { key: "normal_fall", label: "Normal Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
-      { key: "fast_fall", label: "Fast Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
-      { key: "fast_escape", label: "Fast Escape Option", values: { "true": "Yes", "false": "No" } },
-      { key: "multiple_jumps", label: "Multiple Double Jumps", values: { "true": "Yes", "false": "No" } },
-      { key: "anti_projectile", label: "Anti Projectile Move", values: { "true": "Yes", "false": "No" } },
-      { key: "has_item", label: "Has Item", values: { "true": "Yes", "false": "No" } },
-      { key: "has_zair", label: "Has Zair", values: { "true": "Yes", "false": "No" } },
-      { key: "sig_change", label: "Form/Moveset Change", values: { "true": "Yes", "false": "No" } },
-      {
-        key: "effective_range",
-        label: "Effective Range",
+    const STAT_DEFS = {
+      "run_speed" : {label: "Run Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      "initial_dash" : {label: "Initial Dash", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      "air_speed" : {label: "Air Speed", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      "air_acceleration": {label: "Air Acceleration", values: { 1: "Fast", 0: "Average", "-1": "Slow" } },
+      "weight": { label: "Weight", values: { 1: "Heavy", 0: "Average", "-1": "Light" } },
+      "normal_fall": {label: "Normal Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
+      "fast_fall": {label: "Fast Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
+      "fast_escape": {label: "Fast Escape Option", values: { "true": "Yes", "false": "No" } },
+      "multiple_jumps": {label: "Multiple Double Jumps", values: { "true": "Yes", "false": "No" } },
+      "anti_projectile": {label: "Anti Projectile Move", values: { "true": "Yes", "false": "No" } },
+      "has_item": {label: "Has Item", values: { "true": "Yes", "false": "No" } },
+      "has_zair": {label: "Has Zair", values: { "true": "Yes", "false": "No" } },
+      "sig_change": {label: "Form/Moveset Change", values: { "true": "Yes", "false": "No" } },
+      
+        "effective_range":
+        {label: "Effective Range",
         values: { 5: "Long Range", 4: "Long-Mid Range", 3: "Mid Range", 2: "Close-Mid Range", 1: "Close Range", 6: "Adaptive" }
       },
-    ];
- 
-    const allChips = [];
+    };
  
     function formatValue(def, rawValue) {
       if (rawValue === undefined || rawValue === null) return "—";
@@ -254,11 +253,6 @@
       title.id = `group-${group.state}`;
       title.textContent = group.title;
  
-      /*const count = document.createElement('span');
-      count.className = 'results-group-count';
-      count.textContent = members.length;
-      title.appendChild(count);*/
- 
       const blurb = document.createElement('p');
       blurb.className = 'results-group-blurb';
       blurb.textContent = group.blurb;
@@ -325,12 +319,47 @@
     tile.appendChild(img);
     return tile;
   }
+
+  function resizeMatchupGrid(grid) {
+    const tiles = [...grid.children];
+    const tileCount = tiles.length;
+
+    if (tileCount === 0) return;
+
+    const gridWidth = grid.clientWidth - 8;
+    const gridHeight = grid.clientHeight - 8;
+    const gap = 4;
+
+    let bestSize = 0;
+    let bestColumns = 1;
+
+    // Try every possible column count
+    for (let columns = 1; columns <= tileCount; columns++) {
+        const rows = Math.ceil(tileCount / columns);
+
+        const tileWidth = (gridWidth - (columns - 1) * gap) / columns;
+        const tileHeight = (gridHeight - (rows - 1) * gap) / rows;
+
+        // Tiles must fit both horizontally and vertically
+        const size = Math.min(tileWidth, tileHeight);
+
+        if (size > bestSize) {
+            bestSize = size;
+            bestColumns = columns;
+        }
+    }
+
+    grid.style.gridTemplateColumns =
+        `repeat(${bestColumns}, ${bestSize}px)`;
+
+    grid.style.gridAutoRows = `${bestSize}px`;
+  }
  
     (async () => {
       const results = JSON.parse(localStorage.getItem('results')) || [];
       const { attributeRequests = [], matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
-      console.log(results);
       console.log(attributeRequests);
+      console.log(matchupRequests);
  
       const container = document.getElementById('resultsContainer');
       const grid = document.getElementById('matchupGrid');
@@ -339,6 +368,7 @@
       const data = await response.json();
       //const attributes = data.attributes;
       const fighters = data.attributes;
+      console.log(fighters);
       const matchups = data.matchups;
  
       // the best score a character could possibly earn for what the user asked for
@@ -346,7 +376,7 @@
       for (const attribute of attributeRequests) {
         maxAttributeScore += 1 * (1 + attribute.importance);
       }
-      const maxMatchupScore = Object.keys(matchupRequests.chars || {}).length;
+      const maxMatchupScore = Object.keys(matchupRequests || {}).length;
       const maxTotalScore = maxAttributeScore + maxMatchupScore;
  
       // sort every character into a group by overall score. results arrive
@@ -365,12 +395,15 @@
           container.appendChild(buildGroup(group, members, maxAttributeScore, maxMatchupScore));
         }
       });
+
+      // creates the results grid of matchups
       try {
         // separates miis from id order to add them to the end (mimics select screen)
         const miis = new Set();
 
-        fighters.forEach(fighter => {
-            tile = buildTile(fighter);
+        for (const [id, request] of Object.entries(matchupRequests)) {
+            const fighter = fighters[parseInt(id) - 1];
+            const tile = buildTile(fighter);
             if (tile != -1) {
                 if (tile.title.includes("Mii")) {
                     miis.add(tile);
@@ -378,7 +411,7 @@
                     grid.appendChild(tile);
                 }
             }     
-        });
+        };
 
         miis.forEach(mii => grid.appendChild(mii));
             
@@ -387,6 +420,31 @@
         grid.textContent = "Couldn't load the character list.";
         return;
       }
+
+      const statsList = document.getElementById('statResults');
+      let cursor = 0;
+      const rowSizes = [5, 5, 4];
+      // creates the resulting stat list
+      rowSizes.forEach(size => {
+        const rowGroup = document.createElement('div');
+        rowGroup.className = 'stat-row-group';
+        attributeRequests.slice(cursor, cursor + size).forEach(attribute => {
+          let def = STAT_DEFS[attribute.name];
+          const chip = document.createElement('div');
+          chip.className = `stat-chip stat-chip--${"neutral"}`;
+
+          const label = document.createElement('span');
+          label.className = 'stat-chip-label';
+          label.textContent = def.label;
+
+          chip.appendChild(label);
+          rowGroup.appendChild(chip);
+        });
+        statsList.appendChild(rowGroup);
+        cursor += size;
+      });
+      resizeMatchupGrid(grid);
+      
     })();
   </script>
 </body>

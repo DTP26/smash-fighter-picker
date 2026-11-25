@@ -144,7 +144,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
         chars: selections,
-        mutual: mutualBox ? mutualBox.checked : false
       }));
     } catch (err) {
       // storage can be blocked (private mode, etc.); the picker still works without it
@@ -203,6 +202,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // What app.js reads at submit time -
   window.getMatchupSelections = () => ({
     // copy, so callers can't mutate our state
-    chars: { ...selections } 
+    chars: selections 
   });
 });

@@ -172,13 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // grabs matchup data from matchups.js 
 
-    let matchupRequests = window.getMatchupSelections();
+    let matchupRequests = window.getMatchupSelections().chars;
 
     // User must mark at least one matchup/attribute before submitting 
     let errorTimer;
     
 
-    if (attributeRequests.length + Object.keys(matchupRequests.chars).length === 0) {
+    if (attributeRequests.length + Object.keys(matchupRequests).length === 0) {
       numOfErrors += 1;
       if (numOfErrors < 7) {
         errorMessage.textContent += "!";
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // runs both matching algorithms, then sorts results by descending score
-    matchupMatch(matchupRequests.chars, matchups, scores);
+    matchupMatch(matchupRequests, matchups, scores);
     attributeMatch(attributeRequests, attributes, mii_sword, scores);
 
     // need to combine pokemon trainer pokemon and pyra & mythra 

@@ -636,10 +636,14 @@ select:focus-visible {
 
 .results-grid {
   display: grid;
-  grid-template-columns: 45% 1fr;
+  grid-template-columns: 60% 1fr;
   gap: 20px;
   justify-content:center;
   box-sizing: border-box;
+}
+
+.compare-container {
+  padding-top: 8px;
 }
  
 .results-container {
@@ -652,7 +656,7 @@ select:focus-visible {
 }
  
 .fighter-card {
-  width: 450px; 
+  width: 400px; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -700,6 +704,10 @@ select:focus-visible {
   align-items: center;
   width: 100%;
   padding-bottom: 8px;
+}
+
+.stat-list--results {
+  padding-top: 32px;
 }
  
 .stat-row-group {
@@ -866,9 +874,8 @@ select:focus-visible {
 }
 
 .matchup-grid--results {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  justify-content:last baseline;
   gap: 4px;
   width: 90%;
   margin: 0 auto;
@@ -876,6 +883,8 @@ select:focus-visible {
   background-color: var(--bg);
   border-radius: var(--radius-lg);
   align-items: center;
+  height: 50vh;
+  box-sizing: border-box;
 }
 
 /* One character = one button. Neutral look first... */
@@ -884,15 +893,14 @@ select:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+  min-width: 55px;
   padding: 4px;
-  width: 55px;
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--surface-2);
   color: var(--text);
   font: inherit;
-  cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
