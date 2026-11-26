@@ -237,7 +237,7 @@
       
       img.src = `/fighterRenders/${name}.png`;
       img.alt = name;
-      label.textContent = numToRank(character.rank) + ": " + character.name;
+      label.textContent = character.name;
  
       portrait.appendChild(img);
       portrait.appendChild(label);
@@ -279,9 +279,32 @@
  
       const cards = document.createElement('div');
       cards.className = 'results-group-cards';
+
+      let rowGroup = document.createElement('div');
+      rowGroup.className = 'fighter-row-group';
+      let currRank = 1;
+      let rankLabel = document.createElement('span');
+      rankLabel.className = 'rank-label';
+      rankLabel.textContent = numToRank(currRank);
       members.forEach(character => {
-        cards.appendChild(buildCard(character, maxAttributeScore, maxMatchupScore));
+        if (character.rank != currRank) {
+          cards.appendChild(rankLabel);
+          cards.appendChild(rowGroup);
+
+          rowGroup = document.createElement('div');
+          rowGroup.className = 'fighter-row-group';
+          currRank = character.rank;
+          rankLabel = document.createElement('span');
+          rankLabel.className = 'rank-label';
+          rankLabel.textContent = numToRank(currRank);
+        }
+        rowGroup.appendChild(buildCard(character, maxAttributeScore, maxMatchupScore));
       });
+
+      // Append the final row
+      if (rowGroup.children.length > 0) {
+        cards.appendChild(rowGroup);
+      }
  
       section.setAttribute('aria-labelledby', title.id);
       section.appendChild(header);

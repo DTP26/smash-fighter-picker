@@ -636,7 +636,7 @@ select:focus-visible {
 
 .results-grid {
   display: grid;
-  grid-template-columns: 60% 1fr;
+  grid-template-columns: 50% 1fr;
   gap: 20px;
   justify-content:center;
   box-sizing: border-box;
@@ -654,15 +654,28 @@ select:focus-visible {
  
 .results-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: 100%;
   margin: 0 auto;
   overflow-y: scroll;
   height: 90vh;
 }
+
+.fighter-row-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
  
 .fighter-card {
-  width: 400px; 
   display: flex;
+  flex: 1 1 0;
+  min-width: 200px;
+  max-width: 300px;
   flex-direction: column;
   align-items: center;
   text-align: center;
@@ -670,24 +683,19 @@ select:focus-visible {
   border: 3px solid var(--border);
   border-radius: var(--radius-lg);
   gap: 8px;
-  padding: 5px 5px 5px;
+  padding: 8px;
   box-sizing: content-box;
-  scroll-snap-align: center;
-  zoom: 0.5;
+  cursor: pointer;
 }
 
-.results-group .fighter-card:hover {
-  transform: scale(1);
-  border-color: var(--group-color);
-}
- 
 .fighter-card img {
-  width: min(250px, 100%);
+  width: 100%;
+  max-width: 180px;
   aspect-ratio: 1 / 1;
   object-fit: contain;
   border-radius: var(--radius-md);
-  transition: transform 0.3s ease;
-  padding: 10px;
+  padding: 4px;
+  box-sizing: border-box;
 }
 
 .fighter-card[data-state="selected"] {
@@ -702,6 +710,102 @@ select:focus-visible {
   white-space: nowrap;
   color: var(--text);
   text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.rank-label {
+  font-family: var(--font-display);
+  font-size: clamp(14px, 2vw, 32px);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.results-group {
+  width: 100%;
+}
+
+.results-group + .results-group {
+  margin-top: 40px;
+}
+
+.results-group-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.results-group-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 3.25rem);
+  color: var(--group-color);
+}
+
+.results-group-count {
+  padding: 0.1em 0.6em;
+  border: 2px solid var(--group-color);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.4em;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.results-group-blurb {
+  margin: 6px 0 0;
+  font-size: clamp(1rem, 1vw, 1.3rem);
+  color: var(--text-muted);
+}
+
+.results-group-header::after {
+  content: "";
+  display: block;
+  height: 4px;
+  margin-top: 20px;
+  border-radius: 2px;
+  background: var(--group-color);
+}
+
+.results-group-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* cards pick up their group's color */
+.results-group .fighter-card[data-state="selected"] {
+  border-color: var(--group-color);
+}
+
+.results-group--perfect {
+  --group-color: var(--perfect);
+}
+
+.results-group--match {
+  --group-color: var(--success);
+}
+
+.results-group--mid {
+  --group-color: var(--accent);
+}
+
+.results-group--mismatch {
+  --group-color: var(--danger-mild);
+}
+
+.results-group--bigMismatch {
+  --group-color: var(--danger);
+}
+
+.results-group .fighter-card:hover {
+  transform: scale(1);
+  border-color: var(--group-color);
 }
  
  
@@ -818,87 +922,6 @@ select:focus-visible {
   color: var(--danger-mild);
 }
 
-
-.results-group {
-  width: 100%;
-}
-
-.results-group + .results-group {
-  margin-top: 40px;
-}
-
-
-.results-group-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.results-group-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 2vw, 3.25rem);
-  color: var(--group-color);
-}
-
-.results-group-count {
-  padding: 0.1em 0.6em;
-  border: 2px solid var(--group-color);
-  border-radius: 999px;
-  font-family: var(--font-body);
-  font-size: 0.4em;
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-.results-group-blurb {
-  margin: 6px 0 0;
-  font-size: clamp(1rem, 1vw, 1.3rem);
-  color: var(--text-muted);
-}
-
-.results-group-header::after {
-  content: "";
-  display: block;
-  height: 4px;
-  margin-top: 20px;
-  border-radius: 2px;
-  background: var(--group-color);
-}
-
-.results-group-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-}
-
-/* cards pick up their group's color */
-.results-group .fighter-card[data-state="selected"] {
-  border-color: var(--group-color);
-}
-
-.results-group--perfect {
-  --group-color: var(--perfect);
-}
-
-.results-group--match {
-  --group-color: var(--success);
-}
-
-.results-group--mid {
-  --group-color: var(--accent);
-}
-
-.results-group--mismatch {
-  --group-color: var(--danger-mild);
-}
-
-.results-group--bigMismatch {
-  --group-color: var(--danger);
-}
 
 .matchup-grid--results {
   display: grid;
