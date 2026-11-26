@@ -54,6 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
             character.matchupScore += 0.25;
           }
 
+          // lower score for siuations where playerbases have opposite opinions
+
+          if (currentOpinion + targetOpinion == 0 && currentOpinion != targetOpinion) {
+            character.matchupScore -= 0.25;
+          }
+
         }
     }
     
@@ -264,6 +270,11 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(
         "requirements",
         JSON.stringify({attributeRequests, matchupRequests})
+    );
+
+    localStorage.setItem(
+      "information",
+      JSON.stringify({attributes, matchups})
     );
 
 

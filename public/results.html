@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1 class="results-label">RESULTS</h1>
   <p class="results-sub">
   </p>
  
@@ -52,6 +51,15 @@
         values: { 5: "Long Range", 4: "Long-Mid Range", 3: "Mid Range", 2: "Close-Mid Range", 1: "Close Range", 6: "Adaptive" }
       },
     };
+
+    const results = JSON.parse(localStorage.getItem('results')) || [];
+    const { attributeRequests = [], matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
+    const { attributes = [], matchups = {} } = JSON.parse(localStorage.getItem('information')) || {};
+    const container = document.getElementById('resultsContainer');
+    const grid = document.getElementById('matchupGrid');
+    const attributeList = document.getElementById('statResults');
+    let currSelected = null;
+    console.log(attributeList);
  
     function formatValue(def, rawValue) {
       if (rawValue === undefined || rawValue === null) return "—";
@@ -234,7 +242,16 @@
       portrait.appendChild(img);
       portrait.appendChild(label);
       card.appendChild(portrait);
-      card.appendChild(buildStatList(character, maxAttributeScore, maxMatchupScore));
+      //card.appendChild(buildStatList(character, maxAttributeScore, maxMatchupScore));
+      card.addEventListener("click", () =>{
+        if (currSelected) {
+          currSelected.dataset.state = "notSelected";
+        } 
+        card.dataset.state = "selected"
+        currSelected = card;
+        colorMatchupGrid(character);
+        colorattributeList(character);
+      });
  
       return card;
     }
@@ -320,7 +337,9 @@
     return tile;
   }
 
-  function resizeMatchupGrid(grid) {
+  /** sets the size of the results screen matchup grid based on 
+   * the number of matchups the user requested**/
+  function resizeMatchupGrid() {
     const tiles = [...grid.children];
     const tileCount = tiles.length;
 
@@ -354,22 +373,93 @@
 
     grid.style.gridAutoRows = `${bestSize}px`;
   }
+
+  function colorMatchupGrid(fighter) {
+    const fighterId = fighter.id;
+    for (tile of grid.children) {
+      const opponentID = parseInt(tile.dataset.characterId);
+      const fighterOpinion = matchups[fighterId][opponentID];
+      const opponentOpinion = matchups[opponentID][fighterId] * -1;
+      const totalOpinion = fighterOpinion + opponentOpinion;
+      if (fighterOpinion != opponentOpinion && totalOpinion == 0) {
+        tile.dataset.state = "volatile";
+      } else {
+        switch (totalOpinion) {
+          case 2: 
+            tile.dataset.state = "winning";
+            break;
+          case 1: 
+            tile.dataset.state = "winning/even";
+            break; 
+          case 0: 
+            tile.dataset.state = "even";
+            break;
+          case -1: 
+            tile.dataset.state = "even/losing";
+            break; 
+          case -2: 
+            tile.dataset.state = "losing";
+            break;
+          default:
+            tile.dataset.state = "neutral";
+        }
+      }
+    }
+  }
+  function colorattributeList(fighter) {
+    let i = 0;
+    for (row of attributeList.children) {
+      for (chip of row.children) {
+        const def = STAT_DEFS[chip.dataset.attributeId];
+        const charValue = attributes[fighter.id - 1][chip.dataset.attributeId];
+        const requestedValue = parseInt(attributeRequests[i]["value"]);
+        if (chip.dataset.attributeId == "effective_range") {
+          console.log(charValue);
+          console.log(requestedValue);
+        }
+        let state = 'neutral';
+        if (charValue == requestedValue) {
+          state = 'match';
+        } else if (Math.abs(charValue - requestedValue) == 1 && !attributeRequests[i]["isToggle"]) {
+          state = 'mid';
+        } else {
+          state = "bigMismatch";
+        }
+        chip.className = `stat-chip stat-chip--${state}`;
+
+        chip.children[1].textContent = def["values"][charValue];
+        i+= 1;
+      }
+    }
+  }
+
+  // splits `total` items into rows of at most `maxPerRow`, keeping row
+  // sizes as even as possible and handing any remainder to the middle
+  // row(s) first so the block reads as a centered pyramid rather than
+  // a lopsided or orphaned last row (e.g. 13 items, max 5 -> 4, 5, 4)
+  function balancedRowSizes(total, maxPerRow) {
+    const rows = Math.max(1, Math.ceil(total / maxPerRow));
+    const base = Math.floor(total / rows);
+    let remainder = total - base * rows;
+    const sizes = new Array(rows).fill(base);
+    const mid = Math.floor(rows / 2);
+    let step = 0;
+    while (remainder > 0) {
+      const idx = step % 2 === 0
+        ? mid + Math.floor((step + 1) / 2)
+        : mid - Math.floor((step + 1) / 2);
+      sizes[idx] += 1;
+      remainder -= 1;
+      step += 1;
+    }
+    return sizes;
+  }
  
     (async () => {
-      const results = JSON.parse(localStorage.getItem('results')) || [];
-      const { attributeRequests = [], matchupRequests = {} } = JSON.parse(localStorage.getItem('requirements')) || {};
-      console.log(attributeRequests);
+      
+      /**console.log(attributeRequests);
       console.log(matchupRequests);
- 
-      const container = document.getElementById('resultsContainer');
-      const grid = document.getElementById('matchupGrid');
- 
-      const response = await fetch("/api/data");
-      const data = await response.json();
-      //const attributes = data.attributes;
-      const fighters = data.attributes;
-      console.log(fighters);
-      const matchups = data.matchups;
+      console.log(attributes);**/
  
       // the best score a character could possibly earn for what the user asked for
       let maxAttributeScore = 0;
@@ -392,7 +482,7 @@
       GROUPS.forEach(group => {
         const members = buckets.get(group.state);
         if (members.length > 0) {
-          container.appendChild(buildGroup(group, members, maxAttributeScore, maxMatchupScore));
+          container.appendChild(buildGroup(group, members, maxAttributeScore, maxMatchupScore, attributes, matchups));
         }
       });
 
@@ -402,7 +492,7 @@
         const miis = new Set();
 
         for (const [id, request] of Object.entries(matchupRequests)) {
-            const fighter = fighters[parseInt(id) - 1];
+            const fighter = attributes[parseInt(id) - 1];
             const tile = buildTile(fighter);
             if (tile != -1) {
                 if (tile.title.includes("Mii")) {
@@ -421,9 +511,8 @@
         return;
       }
 
-      const statsList = document.getElementById('statResults');
       let cursor = 0;
-      const rowSizes = [5, 5, 4];
+      const rowSizes = balancedRowSizes(attributeRequests.length, 4);
       // creates the resulting stat list
       rowSizes.forEach(size => {
         const rowGroup = document.createElement('div');
@@ -432,18 +521,25 @@
           let def = STAT_DEFS[attribute.name];
           const chip = document.createElement('div');
           chip.className = `stat-chip stat-chip--${"neutral"}`;
+          chip.dataset.attributeId = attribute.name;
 
           const label = document.createElement('span');
           label.className = 'stat-chip-label';
           label.textContent = def.label;
 
+          const value = document.createElement('span');
+          value.className = 'stat-chip-value';
+          value.textContent = "";
+
           chip.appendChild(label);
+          chip.appendChild(value);
           rowGroup.appendChild(chip);
         });
-        statsList.appendChild(rowGroup);
+        attributeList.appendChild(rowGroup);
         cursor += size;
       });
       resizeMatchupGrid(grid);
+      window.addEventListener("resize", resizeMatchupGrid);
       
     })();
   </script>
