@@ -16,9 +16,10 @@
  
   <div class="results-grid">
     <div class="results-container" id="resultsContainer"></div>
-    <div class="compare-container">
+    <div class="compare-container" id = "compareContainer">
       <div class="matchup-grid--results" id="matchupGrid"></div>
-      <div class="stat-list--results" id="statResults"></div>
+      <div class="stat-list" id="statResults"></div>
+      <div class="stat-list" id="overallScore"></div>
     </div>
     
   </div>
@@ -58,6 +59,29 @@
     const container = document.getElementById('resultsContainer');
     const grid = document.getElementById('matchupGrid');
     const attributeList = document.getElementById('statResults');
+    const overallScore = document.getElementById('overallScore');
+
+    let maxAttributeScore = 0;
+    for (const attribute of attributeRequests) {
+      maxAttributeScore += 1 * (1 + attribute.importance);
+    }
+    const maxMatchupScore = Object.keys(matchupRequests || {}).length;
+    const maxTotalScore = maxAttributeScore + maxMatchupScore;
+
+    if (attributeRequests.length == 0) {
+      grid.style.height = "50vh";
+      attributeList.style.height = "0vh";
+      overallScore.style.height = "40vh";
+    } else if (Object.keys(matchupRequests).length == 0) {
+      grid.style.height = "0vh";
+      attributeList.style.height = "50vh";
+      overallScore.style.height = "40vh";
+    } else {
+      grid.style.height = "40vh";
+      attributeList.style.height = "45vh";
+      overallScore.style.height = "15vh";
+    }
+    
     let currSelected = null;
     console.log(attributeList);
  
@@ -93,99 +117,6 @@
       else if (ratio >= 0.5) return "mid";
       else if (ratio >= 0.25) return "mismatch";
       return "bigMismatch";
-    }
- 
-    // One small colored chip: label on top, value underneath
-    function buildChip(label, value, state) {
-      const chip = document.createElement('div');
-      chip.className = `stat-chip stat-chip--${state}`;
- 
-      const labelEl = document.createElement('span');
-      labelEl.className = 'stat-chip-label';
-      labelEl.textContent = label;
- 
-      const valueEl = document.createElement('span');
-      valueEl.className = 'stat-chip-value';
-      valueEl.textContent = value;
- 
-      chip.appendChild(labelEl);
-      chip.appendChild(valueEl);
-      return chip;
-    }
- 
-    // The row of three chips under each character: Attributes, Matchups, Overall
-    function buildStatList(fighter, maxAttributeScore, maxMatchupScore) {
-      const maxTotalScore = maxAttributeScore + maxMatchupScore;
- 
-      const rowGroup = document.createElement('div');
-      rowGroup.className = 'stat-row-group';
-
-      if (maxMatchupScore > 0) {
-        rowGroup.appendChild(buildChip(
-          "Matchups",
-          `${fighter.matchupScore} / ${maxMatchupScore}`,
-          scoreState(fighter.matchupScore, maxMatchupScore)
-        ));
-      }
-
-      if (maxAttributeScore > 0) {
-        if (fighter.name == "Pokemon Trainer") {
-          rowGroup.appendChild(buildChip(
-            "Squirtle Attributes",
-            `${fighter.squirtleAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.squirtleAttributes, maxAttributeScore)
-          ));
-          rowGroup.appendChild(buildChip(
-            "Ivysaur Attributes",
-            `${fighter.ivysaurAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.ivysaurAttributes, maxAttributeScore)
-          ));
-          rowGroup.appendChild(buildChip(
-            "Charizard Attributes",
-            `${fighter.charizardAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.charizardAttributes, maxAttributeScore)
-          ));
-          rowGroup.appendChild(buildChip(
-            "Overall Attributes",
-            `${fighter.averageAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.averageAttributes, maxAttributeScore)
-          ));
-        } else if (fighter.name == "Pyra & Mythra") {
-          rowGroup.appendChild(buildChip(
-            "Pyra Attributes",
-            `${fighter.pyraAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.pyraAttributes, maxAttributeScore)
-          ));
-          rowGroup.appendChild(buildChip(
-            "Mythra Attributes",
-            `${fighter.mythraAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.mythraAttributes, maxAttributeScore)
-          ));
-          rowGroup.appendChild(buildChip(
-            "Overall Attributes",
-            `${fighter.averageAttributes} / ${maxAttributeScore}`,
-            scoreState(fighter.averageAttributes, maxAttributeScore)
-          ));
-        } else {
-          rowGroup.appendChild(buildChip(
-            "Attributes",
-            `${fighter.attributeScore} / ${maxAttributeScore}`,
-            scoreState(fighter.attributeScore, maxAttributeScore)
-          ));
-        }
-      }
-      
-      
-      rowGroup.appendChild(buildChip(
-        "Overall Score",
-        `${fighter.totalScore} / ${maxTotalScore}`,
-        scoreState(fighter.totalScore, maxTotalScore)
-      ));
- 
-      const list = document.createElement('div');
-      list.className = 'stat-list';
-      list.appendChild(rowGroup);
-      return list;
     }
 
     // converst number to rank (1 -> 1st, etc.) Assumes number between 1-89
@@ -242,7 +173,6 @@
       portrait.appendChild(img);
       portrait.appendChild(label);
       card.appendChild(portrait);
-      //card.appendChild(buildStatList(character, maxAttributeScore, maxMatchupScore));
       card.addEventListener("click", () =>{
         if (currSelected) {
           currSelected.dataset.state = "notSelected";
@@ -251,6 +181,7 @@
         currSelected = card;
         colorMatchupGrid(character);
         colorattributeList(character);
+        colorScores(character);
       });
  
       return card;
@@ -282,9 +213,19 @@
 
       let rowGroup = document.createElement('div');
       rowGroup.className = 'fighter-row-group';
-      let currRank = 1;
+      let currRank = members[0].rank;
       let rankLabel = document.createElement('span');
-      rankLabel.className = 'rank-label';
+      
+      if (currRank == 1) {
+        rankLabel.className = 'rank-label--first'
+      } else if (currRank == 2) {
+        rankLabel.className = 'rank-label--second'
+      } else if (currRank == 3) {
+        rankLabel.className = 'rank-label--third'
+      } else {
+        rankLabel.className = 'rank-label';
+      }
+      
       rankLabel.textContent = numToRank(currRank);
       members.forEach(character => {
         if (character.rank != currRank) {
@@ -294,8 +235,15 @@
           rowGroup = document.createElement('div');
           rowGroup.className = 'fighter-row-group';
           currRank = character.rank;
+          
           rankLabel = document.createElement('span');
-          rankLabel.className = 'rank-label';
+          if (currRank == 2) {
+            rankLabel.className = 'rank-label--second'
+          } else if (currRank == 3) {
+            rankLabel.className = 'rank-label--third'
+          } else {
+            rankLabel.className = 'rank-label';
+          }
           rankLabel.textContent = numToRank(currRank);
         }
         rowGroup.appendChild(buildCard(character, maxAttributeScore, maxMatchupScore));
@@ -303,6 +251,7 @@
 
       // Append the final row
       if (rowGroup.children.length > 0) {
+        cards.appendChild(rankLabel);
         cards.appendChild(rowGroup);
       }
  
@@ -456,6 +405,28 @@
     }
   }
 
+  function colorScores(fighter) {
+    const totalScore = document.getElementById("totalChip");
+    totalScore.className = `stat-chip stat-chip--${scoreState(fighter.totalScore, maxTotalScore)}`;
+
+    const totalValue = document.getElementById("totalValue");
+    totalValue.textContent = `${fighter.totalScore} / ${maxTotalScore}`;
+
+    if (maxAttributeScore > 0 && maxMatchupScore > 0) {
+      const matchupChip = document.getElementById("matchupsChip");
+      matchupChip.className = `stat-chip stat-chip--${scoreState(fighter.matchupScore, maxMatchupScore)}`;
+
+      const matchupValue = document.getElementById("matchupsValue");
+      matchupValue.textContent = `${fighter.matchupScore} / ${maxMatchupScore}`;
+
+      const attributeChip = document.getElementById("attributesChip");
+      attributeChip.className = `stat-chip stat-chip--${scoreState(fighter.attributeScore, maxAttributeScore)}`;
+
+      const attributeValue = document.getElementById("attributesValue");
+      attributeValue.textContent = `${fighter.attributeScore} / ${maxAttributeScore}`;
+    }
+  }
+
   // splits `total` items into rows of at most `maxPerRow`, keeping row
   // sizes as even as possible and handing any remainder to the middle
   // row(s) first so the block reads as a centered pyramid rather than
@@ -485,12 +456,7 @@
       console.log(attributes);**/
  
       // the best score a character could possibly earn for what the user asked for
-      let maxAttributeScore = 0;
-      for (const attribute of attributeRequests) {
-        maxAttributeScore += 1 * (1 + attribute.importance);
-      }
-      const maxMatchupScore = Object.keys(matchupRequests || {}).length;
-      const maxTotalScore = maxAttributeScore + maxMatchupScore;
+      
  
       // sort every character into a group by overall score. results arrive
       // sorted best-first, so each group keeps that order
@@ -561,6 +527,75 @@
         attributeList.appendChild(rowGroup);
         cursor += size;
       });
+      // overall score setup
+
+      const scoreRow = document.createElement('div');
+      scoreRow.className = 'score-row-group';
+
+      // only show seperate scores if both are relevant
+      if (maxAttributeScore > 0 && maxMatchupScore > 0) {
+        // matchup score
+
+        const matchupsChip = document.createElement('div');
+        matchupsChip.className = `stat-chip stat-chip--${"neutral"}`;
+        matchupsChip.id = "matchupsChip"
+  
+        const matchupsLabel = document.createElement('span');
+        matchupsLabel.className = 'stat-chip-label';
+        matchupsLabel.textContent = "Matchups";
+  
+        const matchupsValue = document.createElement('span');
+        matchupsValue.className = 'stat-chip-value';
+        matchupsValue.textContent = "";
+        matchupsValue.id = "matchupsValue"
+  
+        matchupsChip.appendChild(matchupsLabel);
+        matchupsChip.appendChild(matchupsValue);
+
+        //attribute score
+
+        const attributesChip = document.createElement('div');
+        attributesChip.className = `stat-chip stat-chip--${"neutral"}`;
+        attributesChip.id = "attributesChip"
+  
+        const attributesLabel = document.createElement('span');
+        attributesLabel.className = 'stat-chip-label';
+        attributesLabel.textContent = "Attributes";
+  
+        const attributesValue = document.createElement('span');
+        attributesValue.className = 'stat-chip-value';
+        attributesValue.textContent = "";
+        attributesValue.id = "attributesValue"
+
+        attributesChip.appendChild(attributesLabel);
+        attributesChip.appendChild(attributesValue);
+
+        scoreRow.appendChild(matchupsChip);
+        scoreRow.appendChild(attributesChip);
+      }
+
+      // total score
+
+      const totalChip = document.createElement('div');
+      totalChip.className = `stat-chip stat-chip--${"neutral"}`;
+      totalChip.id = "totalChip";
+ 
+      const totalLabel = document.createElement('span');
+      totalLabel.className = 'stat-chip-label';
+      totalLabel.textContent = "Total Score";
+ 
+      const totalValue = document.createElement('span');
+      totalValue.className = 'stat-chip-value';
+      totalValue.textContent = "";
+      totalValue.id = "totalValue";
+
+      totalChip.appendChild(totalLabel);
+      totalChip.appendChild(totalValue);
+      scoreRow.append(totalChip);
+
+      overallScore.appendChild(scoreRow);
+
+      
       resizeMatchupGrid(grid);
       window.addEventListener("resize", resizeMatchupGrid);
       
