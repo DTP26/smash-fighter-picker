@@ -30,9 +30,17 @@
   <div class="results-grid">
     <div class="results-container" id="resultsContainer"></div>
     <div class="compare-container" id = "compareContainer">
+      <div class="matchup-explain" id = "matchupExplain">
+        <span class="legend--perfect">Winning, </span>
+        <span class="legend--match">Winning/Even, </span>  
+        <span class="legend--mid">Even, </span>
+        <span class="legend--volatile">Volatile (Winning/Losing), </span>
+        <span class="legend--mismatch">Even/Losing, </span>
+        <span class="legend--bigMismatch">Losing, </span> 
+      </div>
       <div class="matchup-grid--results" id="matchupGrid"></div>
-      <div class="stat-list" id="statResults"></div>
-      <div class="stat-list" id="overallScore"></div>
+      <div class="attribute-list" id="statResults"></div>
+      <div class="score-list" id="overallScore"></div>
     </div>
     
   </div>
@@ -55,7 +63,7 @@
       "fast_fall": {label: "Fast Fall Speed", values: { 1: "Fast-Faller", 0: "Average", "-1": "Floaty" } },
       "fast_escape": {label: "Fast Escape Option", values: { "true": "Yes", "false": "No" } },
       "multiple_jumps": {label: "Multiple Double Jumps", values: { "true": "Yes", "false": "No" } },
-      "anti_projectile": {label: "Anti Projectile Move", values: { "true": "Yes", "false": "No" } },
+      "anti_projectile": {label: "Anti-Projectile Move", values: { "true": "Yes", "false": "No" } },
       "has_item": {label: "Has Item", values: { "true": "Yes", "false": "No" } },
       "has_zair": {label: "Has Zair", values: { "true": "Yes", "false": "No" } },
       "sig_change": {label: "Form/Moveset Change", values: { "true": "Yes", "false": "No" } },
@@ -71,6 +79,7 @@
     const { attributes = [], matchups = {} } = JSON.parse(localStorage.getItem('information')) || {};
     const container = document.getElementById('resultsContainer');
     const grid = document.getElementById('matchupGrid');
+    const matchupExplain = document.getElementById('matchupExplain');
     const attributeList = document.getElementById('statResults');
     const overallScore = document.getElementById('overallScore');
 
@@ -83,20 +92,20 @@
 
     if (attributeRequests.length == 0) {
       grid.style.height = "50vh";
-      attributeList.style.height = "0vh";
-      overallScore.style.height = "40vh";
+      attributeList.style.flex = "0"
+      overallScore.style.flex = "1";
     } else if (Object.keys(matchupRequests).length == 0) {
-      grid.style.height = "0vh";
-      attributeList.style.height = "50vh";
-      overallScore.style.height = "40vh";
+      grid.style.display = "none"
+      matchupExplain.style.display = "none";
+      attributeList.style.flex = "1";
+      overallScore.style.flex = "1";
     } else {
-      grid.style.height = "40vh";
-      attributeList.style.height = "45vh";
-      overallScore.style.height = "15vh";
+      grid.style.height = "30vh";
+      attributeList.style.flex = "1 1 0";
+      overallScore.style.flex = "0 0 auto";
     }
     
     let currSelected = null;
-    console.log(attributeList);
  
     function formatValue(def, rawValue) {
       if (rawValue === undefined || rawValue === null) return "—";
@@ -515,6 +524,7 @@
 
       let cursor = 0;
       const rowSizes = balancedRowSizes(attributeRequests.length, 4);
+      console.log(rowSizes);
       // creates the resulting stat list
       rowSizes.forEach(size => {
         const rowGroup = document.createElement('div');
