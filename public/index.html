@@ -11,10 +11,34 @@
 </head>
 <body>
 
+  <section id="home-start">
+    <h1 class="title-label">Smash Picker</h1>
+    <nav class="navbar-pages">
+      <ul>
+        <li><a class="navbar-page" href="index.html">Picker</a></li>
+        <li><a class="navbar-page"href="faq.html">Faq</a></li>
+      </ul>
+    </nav>
+  </section>
+  
 
-  <h1 class="title-label">Smash Picker</h1>
+  <div class="seperator-title" aria-hidden="true"></div>
+  <!-- will finalize section navigation later
+  <nav class="navbar-sections">
+    <ul>
+      <li><a class="navbar-section"href="#home-start">Home</a></li>
+      <li><a class="navbar-section"href="#matchups-heading">Matchups</a></li>
+      <li><a class="navbar-section"href="#base-heading">Base Stats</a></li>
+      <li><a class="navbar-section"href="#toolkit-heading">Toolkit</a></li>
+      <li><a class="navbar-section"href="#playstyle-heading">Playstyle</a></li>
+      <li><a class="navbar-section"href="#swordfighter-heading">Important Question</a></li>
+    </ul>
+  </nav>--> 
+  
 
   <form id="preferencesForm">
+
+    
 
     <section aria-labelledby="matchups-heading">
       <h2 class="section-label" id="matchups-heading">Matchups</h2>
@@ -56,14 +80,13 @@
     </p>
     </section>
 
-    <section class="stat-section" aria-labelledby="movement-heading">
+    <section class="stat-section" aria-labelledby="movement-heading" id = "base-heading">
       <h2 class="attributes-label" id="movement-heading">Base Stats</h2>
       <div class="card-grid">
 
         <div class="form-group">
           <label class="stat-label" for="runSpeed">Run Speed</label>
           <p class="stat-desc">How fast the character can move across the ground.
-            <br> (Fast: greater than 1.85. Slow: less than 1.6)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
@@ -96,7 +119,6 @@
         <div class="form-group">
           <label class="stat-label" for="initialDash">Initial Dash</label>
           <p class="stat-desc">How far the character dashes in short bursts.
-            <br> (Fast: greater than 2.05. Slow: less than 1.82S)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
@@ -129,7 +151,6 @@
         <div class="form-group">
           <label class="stat-label" for="weight">Weight</label>
           <p class="stat-desc">How far the character will be knocked away when hit.
-            <br> (Heavy: greater than 101. Light: less than 90)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
@@ -162,7 +183,6 @@
         <div class="form-group">
           <label class="stat-label" for="airSpeed">Air Speed</label>
           <p class="stat-desc">How quickly the character moves forward in the air.
-            <br> (Fast: greater than 1.14. Slow: less than 0.97)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
@@ -195,7 +215,6 @@
         <div class="form-group">
           <label class="stat-label" for="airAcceleration">Air Acceleration</label>
           <p class="stat-desc">How quickly the character changes directions in the air.
-            <br> (Fast: greater than 0.085. Slow: less than 0.6)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
@@ -228,7 +247,6 @@
         <div class="form-group">
           <label class="stat-label" for="normalFall">Normal Fall Speed</label>
           <p class="stat-desc">How fast the character will fall while NOT holding down.
-            (Combination of fall speed and gravity)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>
@@ -261,7 +279,6 @@
         <div class="form-group">
           <label class="stat-label" for="fastfall">Fast Fall Speed</label>
           <p class="stat-desc">How fast the character will fall when holding down.
-            <br>(Fast: greater than 2.7. Floaty: less than 2.4)
           </p>
           <div class="card-body">
             <video class="stat-video" loop muted playsinline controls>

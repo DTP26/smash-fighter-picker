@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smash Character Finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Kanit:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <section id="home-start">
+    <h1 class="title-label">Smash Picker</h1>
+    <nav class="navbar-pages">
+      <ul>
+        <li><a class="navbar-page" href="index.html">Picker</a></li>
+        <li><a class="navbar-page"href="faq.html">Faq</a></li>
+      </ul>
+    </nav>
+  </section>
+  
+
+  <div class="seperator-title" aria-hidden="true"></div>
+
+  <h3 class = "faq-label">
+    Frequently Asked Questions
+  </h3>
+  <ul class="faq">
+    <li class="faq-question">
+        How do the matchup calculations work?
+    </li>
+    <li class="faq-answer">
+        Matchups are ranked based on opinions from both sides of the matchup. One side's opinion is either that
+        they win, lose, or go about even. Characters are more likely to be chosen to cover a matchup if both sides 
+        agree on a relatively positive result. <br> <br>
+        For example, lets say I'm searching for a character that beats Fox. Assume that Fox players say they 
+        lose to both Falco and R.O.B. If Falco players say they beat Fox, but R.O.B players say that it's even,
+        Falco will be given a higher score.
+    </li>
+    <li class="faq-question">
+        How do you find opinions on the matchups?
+    </li>
+    <li class="faq-answer">
+        One of two ways. The easy way is finding a joint chart made somewhat recently with enough good players 
+        and rolling with it. The hard (and WAY more often needed) way is me manually searching for individual charts 
+        (3 per character currently) from top/high level players and aggrgeating the results myself. I try my best to 
+        search the best players from different regions to get a wider range of opinions, and I'd like to 
+        increase the number of charts over time, but I only have so much free time to burn.
+
+        If you'd like to confirm the validity of the charts, they are all linked
+        <a style="color: #ffffff;"href="https://docs.google.com/document/d/12Th2KNu6tFfgTVRUo853QCgVgoLeiAaLtf8dGXC7vUY">
+            here
+        </a>.
+    </li>
+    <li class="faq-question">
+        Why don't you seperate slight losing/winning from hard /losing/winning?
+    </li>
+    <li class="faq-answer">
+        If I eventually get every playerbase to make joint matchup charts, I would  
+        add this, but there is too much inconsistency between how diffeent players style/format their charts.
+        Some players go from +2 to -2, some just say winning/losing, and there's simply not enough consistency in how good/bad 
+        players consider a particular ranking. This was especially apparent in Japanese matchup charts that would only go as far 
+        as +1 and utilize +0.25 at times. 
+        <br><br> For now though, you can consider "slight winning" as one side of the matchup thinking it's winning,
+        and the other thinking it's losing, while "hard winning" is both sides believing it's winning for one.
+    </li>
+    <li class="faq-question">
+        How do you categorize a character's base stats?
+    </li>
+    <li class="faq-answer">
+        I went through each stat and determined breakpoints to create three groups amongst the roster
+        based on the mean, median, and making the groups somewhat comparable in size. Below are all of the stat
+        breakpoints.
+        <br><br>
+        Run Speed: Below 1.6 is slow, above 1.85 is fast. Initial Dash: Below 1.825 is slow, above 2.05 is fast. 
+        Weight: Below 90 is light, above 101 is heavy. Air Speed: Below 0.97 is slow, above 1.14 is fast.
+        Air Acceleration: below 0.6 is slow, above 0.085 is fast. 
+        Normal Fall Speed: Combination of fall speed (below 1.5 is slow, 1.7 is fast) and gravity (insert values here). 
+        Fast Fall Speed: below 2.4 is floaty, above 2.7 is fast.
+    </li>
+    <li class="faq-question">
+        Why did you make this in the first place?
+    </li>
+    <li class="faq-answer">
+        This started as a small project I did for college. Originally, it had none of the matchup functionality and wasn't even a website; 
+        it was a command line program that scraped info from ultimate frame data. After I graduated, I wanted to revist the project with more
+        time and, besides reworking it into a website, I really wanted to add the matchup functionality due to how often people
+        tend to ask the question "who should I play to beat [insert list here]".
+    </li>
+    <li class="faq-question">
+        What do you plan on adding next?
+    </li>
+    <li class="faq-answer">
+        I plan on adding a page that, given a list of characters, recommends who from that list to play 
+        against everyone in the roster. 
+        <br> I will also add a page that simply shows all of the information tied to a character, both for 
+        convenience and transparency.
+        <br> I'd eventually like to add a couple more questions to the "playstyle" section of the smash picker,
+        such as execution difficulty and camping/cheesing/"fundies", but these are much less set in stone. 
+    </li>
+        
+  </ul>
+
+
+</body>
+</html>
